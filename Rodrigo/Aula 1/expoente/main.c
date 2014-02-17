@@ -1,9 +1,9 @@
 //
 //  main.c
-//  expoente
+//  Expoente
 //
-//  Created by Rodrigo Cunha on 17/02/14.
-//  Copyright (c) 2014 Rafael Ferreira. All rights reserved.
+//  Created by Rodrigo Cunha on 11/02/14.
+//  Copyright (c) 2014 Rodrigo Cunha. All rights reserved.
 //
 
 #include <stdio.h>
@@ -22,7 +22,7 @@ int main(void){
         printf("Valor de n?");
         test = scanf("%d", &n);
         scanf("%*[^\n]"); scanf("%*c");
-        
+
     }while(test == 0);
     
     for(i = 0; i <= x; i++){
@@ -36,7 +36,7 @@ int main(void){
 
 unsigned int expoente(unsigned int pn, unsigned int n){
     unsigned int i, res = 1;
-    
+ 
     for(i = 1; i <= n; i++){
         res *= pn;
         count++;

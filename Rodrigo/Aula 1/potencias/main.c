@@ -1,9 +1,9 @@
 //
 //  main.c
-//  potencias
+//  Potencias
 //
-//  Created by Rodrigo Cunha on 17/02/14.
-//  Copyright (c) 2014 Rafael Ferreira. All rights reserved.
+//  Created by Rodrigo Cunha on 13/02/14.
+//  Copyright (c) 2014 Rodrigo Cunha. All rights reserved.
 //
 
 #include <stdio.h>
