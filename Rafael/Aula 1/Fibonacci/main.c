@@ -26,7 +26,7 @@ int main(void){
     for (i = 0; i <= n; i++) {
         count = 0;
         result = fibonacci(i);
-        printf("fibonacci de %2d = %12u e custou %3d operações", i, result, count);
+        printf("fibonacci de %2d = %3u e custou %3d operações\n", i, result, count);
     }
     
     return 0;
