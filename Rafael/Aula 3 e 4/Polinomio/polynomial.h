@@ -20,7 +20,7 @@
 
 /**************** Definição do Tipo Ponteiro para um Polinómio ****************/
 
-typedef struct poly *PtPoly; // tipo de dados que é um ponteiro, o acesso é por ->
+typedef struct poly *PtPoly;  /* tipo de dados que é um ponteiro, o acesso é por */
 
 /************************ Definição de Códigos de Erro ************************/
 

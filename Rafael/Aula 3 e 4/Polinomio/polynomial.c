@@ -2,7 +2,7 @@
 
  Ficheiro de implementação do Tipo de Dados Abstracto POLINOMIO (polynomial.c).
  A estrutura de dados de suporte do polinómio é uma estrutura, constituída pelo
- campo de tipo inteiro Grau para armazenar o grau do polinómio e o campo de tipo
+ campo de tipo inteiro Degree para armazenar o Degree do polinómio e o campo de tipo
  ponteiro Pol, para representar a sequência atribuída dinamicamente, que vai
  armazenar os seus coeficientes reais.
  
@@ -20,7 +20,7 @@
 
 struct poly
 {
-  unsigned int Degree;  /* grau do polinómio */
+  unsigned int Degree;  /* Degree do polinómio */
   double *Poly;      /* ponteiro para os coeficientes do polinómio */
 };
 
@@ -65,22 +65,24 @@ char *PolyErrorMessage (void)
   else return AbnormalErrorMessage;    /* não há mensagem de erro */
 }
 
-PtPoly PolyCreate (unsigned int pgrau)
+PtPoly PolyCreate (unsigned int pDegree)
 {
   PtPoly Poly;
 
-  /* cria o poly nulo ou inicializado a zero para os polinómios */
-  if ((Poly->Poly = (double *) calloc (pgrau+1, sizeof (double))) == NULL)
-  { 
-    free (Poly); 
-    Error = NO_MEM; 
-    return NULL; 
-  }
+  /* valida a dimensão do vector */
+  if (pDegree < 0) { Error = BAD_SIZE; return NULL; }
 
-  Poly->Degree = pgrau; /* armazenamento da dimensão */
+  /* cria o vector nulo para os polinómios*/
+  if ((Poly = (PtPoly) malloc (sizeof (struct poly))) == NULL)
+  { Error = NO_MEM; return NULL; }
+
+  if ((Poly->Poly = (double *) calloc (pDegree+1, sizeof (double))) == NULL)
+  { free (Poly); Error = NO_MEM; return NULL; }
+
+  Poly->Degree = pDegree;     /* armazenamento da dimensão */
 
   Error = OK;
-  return Poly;    /* devolve o poly criado */
+  return Poly;    /* devolve o vector criado */
 }
 
 void PolyDestroy (PtPoly *ppol)
@@ -156,7 +158,7 @@ double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 {
   /* verifica se o poly existe */
   if (ppol == NULL) { 
-    Error = NO_VECTOR; 
+    Error = NO_POLY; 
     return 0; 
   }
 
@@ -168,7 +170,7 @@ double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 
   Error = OK;
   /* devolve o valor armazenado na componente pretendida do vector */
-  return ppol->Pol[ppos];
+  return ppol->Poly[ppos];
 }
 
 int PolyIsNull (PtPoly ppol)
@@ -177,7 +179,7 @@ int PolyIsNull (PtPoly ppol)
 
   /* verifica se o poly existe */
   if (ppol == NULL) { 
-    Error = NO_VECTOR; 
+    Error = NO_POLY; 
     return 0; 
   }
   
@@ -214,7 +216,7 @@ PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
 
 PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
 {
-  PtVector Sub; int I;
+  PtPoly Sub; int I;
 
   /* validação dos poly */
   if (!ValidPolys (ppol1, ppol2)) 
@@ -226,7 +228,7 @@ PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
 
   /* diferença dos dois poly */
   for (I = 0; I <= ppol1->Degree; I++)
-    Sub->Poly[I] = poly1->Poly[I] - poly2->Poly[I];
+    Sub->Poly[I] = ppol1->Poly[I] - ppol2->Poly[I];
 
   return Sub;  /* devolve o poly diferença */
 }
@@ -240,8 +242,8 @@ PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
     return NULL;
   }
 
-  for(i=0; i<=ppol1->Grau; i++){
-    for (j=0; j <= ppol2->Grau; j++){
+  for(i=0; i<=ppol1->Degree; i++){
+    for (j=0; j <= ppol2->Degree; j++){
       multiplication_result->Poly[i+j] = ppol1->Poly[i] * ppol2->Poly[j];
     }
   }
@@ -250,14 +252,14 @@ PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
 }
 
 int PolyEquals (PtPoly ppol1, PtPoly ppol2){
-  int i, j;
+  int i;
 
-  for (i = 0; i <= ppol1->Grau ; i++){
-    if(ppol1[i]!=ppol2[i]){
-      return false;
+  for (i = 0; i <= ppol1->Degree ; i++){
+    if(ppol1->Poly[i]!=ppol2->Poly[i]){
+      return 0;
     }
   }
-  return true;
+  return 1;
 }
 
 void PolyStoreFile (PtPoly ppol, char *pnomef)
@@ -277,11 +279,11 @@ void PolyStoreFile (PtPoly ppol, char *pnomef)
     return ;
   }
 
-  /* escrita do grau do poly no ficheiro */
-  fprintf (PtF, "%u\n", ppol->Grau);
+  /* escrita do Degree do poly no ficheiro */
+  fprintf (PtF, "%u\n", ppol->Degree);
 
   /* escrita das componentes do poly no ficheiro */
-  for (I = 0; I <= ppol->Grau; I++)
+  for (I = 0; I <= ppol->Degree; I++)
     fprintf (PtF, "%lf\n", ppol->Poly[I]);
 
   Error = OK;
@@ -292,7 +294,7 @@ PtPoly PolyCreateFile (char *pnomef)
 {
   PtPoly Poly;
   FILE *PtF;
-  unsigned int Grau, I;
+  unsigned int Degree, I;
 
   /* abertura com validacao do ficheiro para leitura */
   if ( (PtF = fopen (pnomef, "r")) == NULL) {
@@ -300,16 +302,16 @@ PtPoly PolyCreateFile (char *pnomef)
     return NULL;
   }
 
-  fscanf (PtF, "%u", &Grau);
-  if (Grau < 1) {
+  fscanf (PtF, "%u", &Degree);
+  if (Degree < 1) {
     Error = BAD_SIZE;
     fclose (PtF);
     return NULL;
   }
 
-  if ((Poly = PolyCreate (Grau)) == NULL) { fclose (PtF); return NULL; }
+  if ((Poly = PolyCreate (Degree)) == NULL) { fclose (PtF); return NULL; }
 
-  for (I = 0; I <= Grau; I++) fscanf (PtF, "%lf", Poly->Poly+I);
+  for (I = 0; I <= Degree; I++) fscanf (PtF, "%lf", Poly->Poly+I);
 
   fclose (PtF);  /* fecho do ficheiro */
 
