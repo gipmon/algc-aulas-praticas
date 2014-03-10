@@ -1,13 +1,13 @@
-/*******************************************************************************
+Ôªø/*******************************************************************************
 
- Ficheiro de implementaÁ„o do Tipo de Dados Abstracto MATRIZ (matrix.c).
- A estrutura de dados de suporte da matriz È uma estrutura, constituÌda pelo
- campo NL para armazenar o n˙mero de linhas da matriz, o campo NC para armazenar
- o n˙mero de colunas da matriz e o campo de tipo ponteiro para ponteiro Matriz
- para armazenar os seus NLxNC elementos inteiros, que v„o ser armazenados numa
- sequÍncia bidimensional atribuÌda dinamicamente.
+ Ficheiro de implementa√ß√£o do Tipo de Dados Abstracto MATRIZ (matrix.c).
+ A estrutura de dados de suporte da matriz √© uma estrutura, constitu√≠da pelo
+ campo NL para armazenar o n√∫mero de linhas da matriz, o campo NC para armazenar
+ o n√∫mero de colunas da matriz e o campo de tipo ponteiro para ponteiro Matriz
+ para armazenar os seus NLxNC elementos inteiros, que v√£o ser armazenados numa
+ sequ√™ncia bidimensional atribu√≠da dinamicamente.
 
- Autor : AntÛnio Manuel Adrego da Rocha    Data : Janeiro de 2006
+ Autor : Ant√≥nio Manuel Adrego da Rocha    Data : Janeiro de 2006
 
 *******************************************************************************/
 
@@ -16,7 +16,7 @@
 
 #include "matrix.h"  /* Ficheiro de interface do TDA */
 
-/************* DefiniÁ„o da Estrutura de Dados Interna da MATRIZ **************/
+/************* Defini√ß√£o da Estrutura de Dados Interna da MATRIZ **************/
 
 struct matrix
 {
@@ -27,31 +27,31 @@ struct matrix
 
 /*********************** Controlo Centralizado de Erro ************************/
 
-static unsigned int Error = OK;  /* inicializaÁ„o do erro */
+static unsigned int Error = OK;  /* inicializa√ß√£o do erro */
 
 static char *ErrorMessages[] = {
                                  "Sem erro",
-                                 "A(s) matriz(es) n„o existe(m)",
-                                 "N„o h· memÛria",
-                                 "O ficheiro n„o existe",
-                                 "Dimens„o da matriz errada", 
+                                 "A(s) matriz(es) n√£o existe(m)",
+                                 "N√£o h√° mem√≥ria",
+                                 "O ficheiro n√£o existe",
+                                 "Dimens√£o da matriz errada", 
                                  "Elemento inexistente na matriz",
-                                 "Matrixes com dimensıes diferentes",
-                                 "Matrixes n„o encadeadas"
+                                 "Matrixes com dimens√µes diferentes",
+                                 "Matrixes n√£o encadeadas"
                                };
 
 static char *AbnormalErrorMessage = "Erro desconhecido";
 
-/************** N˙mero de mensagens de erro previstas no mÛdulo ***************/
+/************** N√∫mero de mensagens de erro previstas no m√≥dulo ***************/
 
 #define N (sizeof (ErrorMessages) / sizeof (char *))
 
-/************************ Alus„o ‡s FunÁıes Auxiliares ************************/
+/************************ Alus√£o √†s Fun√ß√µes Auxiliares ************************/
 
 static int EqualDimensionMatrixes (PtMatrix, PtMatrix);
 static int ChainedMatrixes (PtMatrix, PtMatrix);
 
-/*************************** DefiniÁ„o das FunÁıes ****************************/
+/*************************** Defini√ß√£o das Fun√ß√µes ****************************/
 
 void MatrixClearError (void)
 {
@@ -66,22 +66,68 @@ int MatrixError (void)
 char *MatrixErrorMessage (void)
 {
   if (Error < N) return ErrorMessages[Error];
-  else return AbnormalErrorMessage;  /* n„o h· mensagem de erro */
+  else return AbnormalErrorMessage;  /* n√£o h√° mensagem de erro */
 }
 
 PtMatrix MatrixCreate (unsigned int pnl, unsigned int pnc)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Matrix; unsigned int l,i;
+
+  if((Matrix=(PtMatrix) malloc(sizeof(struct matrix))) == NULL){
+    Error = NO_MEM; return NULL;
+  }
+  if((Matrix->Matrix = (int **) calloc(pnl, sizeof(int*))) == NULL){
+    free(Matrix); Error = NO_MEM; return NULL;
+  } 
+  for(l=0; l<pnl; l++){
+    if((Matrix->Matrix[l] = (int *) calloc(pnc, sizeof(int))) == NULL){
+      for(i = 0; i<l;i++) free(Matrix->Matrix[i]);
+      free(Matrix->Matrix);
+      free(Matrix);
+      Error = NO_MEM; return NULL;
+    }
+  }
+  Matrix->NL = pnl; Matrix->NC = pnc;
+  Error = OK;
+  return Matrix;
 }
 
 void MatrixDestroy (PtMatrix *pmat)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix TmpMatrix = *pmat; unsigned int i;
+
+  if(TmpMatrix == NULL){
+    Error = NO_MATRIX;
+    return ;
+  }
+  for(i = 0; i<TmpMatrix->NL;i++) free(TmpMatrix->Matrix[i]);
+  free(TmpMatrix->Matrix);
+  free(TmpMatrix);
+
+  Error = OK;
+  *pmat = NULL;
+
 }
 
 PtMatrix MatrixCopy (PtMatrix pmat)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Copy; int i,l;
+   /*verifica se existe Matriz*/
+  if(pmat == NULL){
+    Error = NO_MATRIX;
+    return NULL;
+  }
+  /*Cria√ß√£o da Matrix copy a NULL*/
+  if((Copy = MatrixCreate(pmat->NL, pmat->NC))==NULL) return NULL;
+
+  /*Copy*/
+  for(i = 0; i<Copy->NL;i++){
+    for(l = 0; l<Copy->NC; l++){
+      Copy->Matrix[i][l] = pmat->Matrix[i][l];
+    }
+  }
+  Error = OK;
+  return Copy;
 }
 
 void MatrixSize (PtMatrix pmat, unsigned int *pnl, unsigned int *pnc)
@@ -105,7 +151,7 @@ void MatrixModifyElement (PtMatrix pmat, unsigned int pl, unsigned int pc, int p
   /* verifica se a matriz existe */
   if (pmat == NULL) { Error = NO_MATRIX; return ; }
 
-  /* validaÁ„o do elemento pretendido */
+  /* valida√ß√£o do elemento pretendido */
   if ((pl < 0) || (pl >= pmat->NL) || (pc < 0) || (pc >= pmat->NC))
   { Error = BAD_INDEX; return ; }
 
@@ -119,7 +165,7 @@ int MatrixObserveElement (PtMatrix pmat, unsigned int pl, unsigned int pc)
   /* verifica se a matriz existe */
   if (pmat == NULL) { Error = NO_MATRIX; return 0; }
 
-  /* validaÁ„o do elemento pretendido */
+  /* valida√ß√£o do elemento pretendido */
   if ((pl < 0) || (pl >= pmat->NL) || (pc < 0) || (pc >= pmat->NC))
   { Error = BAD_INDEX; return 0; }
 
@@ -130,38 +176,109 @@ int MatrixObserveElement (PtMatrix pmat, unsigned int pl, unsigned int pc)
 
 PtMatrix MatrixTranspose (PtMatrix pmat)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Transp; int i,l;
+   /*verifica se existe Matriz*/
+  if(pmat == NULL){
+    Error = NO_MATRIX;
+    return NULL;
+  }
+  /*Cria√ß√£o da Matrix copy a NULL*/
+  if((Transp = MatrixCreate(pmat->NC, pmat->NL))==NULL) return NULL;
+
+  /*Copy*/
+  for(i = 0; i<Transp->NC;i++){
+    for(l = 0; l<Transp->NL; l++){
+      Transp->Matrix[i][l] = pmat->Matrix[l][i];
+    }
+  }
+  Error = OK;
+  return Transp;
 }
 
 PtMatrix MatrixAddition (PtMatrix pmat1, PtMatrix pmat2)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Result; unsigned int i,l;
+
+  if(!EqualDimensionMatrixes(pmat1, pmat2)){
+    Error = BAD_SIZE;
+    return NULL;
+  }
+
+  if((Result = MatrixCreate(pmat1->NL, pmat1->NC))==NULL) return NULL;
+
+  for(i = 0; i<pmat1->NL; i++){
+    for(l = 0; l<pmat1->NC; l++){
+      Result->Matrix[i][l] = MatrixObserveElement(pmat1, i, l) + MatrixObserveElement(pmat2,i,l);
+    }
+  }
+
+  Error = OK;
+  return Result;
+
+
 }
 
 PtMatrix MatrixSubtraction (PtMatrix pmat1, PtMatrix pmat2)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Result; unsigned int i,l;
+
+  if(!EqualDimensionMatrixes(pmat1, pmat2)){
+    Error = BAD_SIZE;
+    return NULL;
+  }
+
+  if((Result = MatrixCreate(pmat1->NL, pmat1->NC))==NULL) return NULL;
+
+  for(i = 0; i<pmat1->NL; i++){
+    for(l = 0; l<pmat1->NC; l++){
+      Result->Matrix[i][l] = MatrixObserveElement(pmat1, i, l) - MatrixObserveElement(pmat2,i,l);
+    }
+  }
+
+  Error = OK;
+  return Result;
+
 }
 
 PtMatrix MatrixMultiplication (PtMatrix pmat1, PtMatrix pmat2)
 {
-  /* insira o seu cÛdigo */
+  PtMatrix Mult; int i, j, k;
+
+  
+  if ((pmat1 == NULL) || (pmat2 == NULL)) { Error = NO_MATRIX; return 0; }
+
+  if (pmat1->NC != pmat2->NL){
+    Error = BAD_SIZE;
+    return NULL;
+  }
+  
+  if((Mult = MatrixCreate(pmat1->NL, pmat1->NC))==NULL) return NULL;
+
+  for (k = 0;k <pmat1->NC; k++){
+    for(i = 0; i< pmat1->NL; i++){
+      for(j = 0; j<pmat2->NC; j++){
+        Mult->Matrix[i][j] = pmat1->Matrix[i][k] * pmat2->Matrix[k][j];
+      }
+    }
+  }
+
+  return Mult;  
 }
 
 int MatrixEquals (PtMatrix pmat1, PtMatrix pmat2)
 {
   unsigned int I, J;
 
-  /* validaÁ„o das matrizes */
+  /* valida√ß√£o das matrizes */
   if (!EqualDimensionMatrixes (pmat1, pmat2)) return 0;
 
   Error = OK;
-  /* comparaÁ„o das componentes dos dois matrizes */
+  /* compara√ß√£o das componentes dos dois matrizes */
   for (I = 0; I < pmat1->NL; I++)
     for (J = 0; J < pmat1->NC; J++)
       if (pmat1->Matrix[I][J] != pmat2->Matrix[I][J]) return 0;
 
-  return 1;  /* as matrizes s„o iguais */
+  return 1;  /* as matrizes s√£o iguais */
 }
 
 void MatrixStoreFile (PtMatrix pmat, char *pnomef)
@@ -174,7 +291,7 @@ void MatrixStoreFile (PtMatrix pmat, char *pnomef)
   /* abertura com validacao do ficheiro para escrita */
   if ((PtF = fopen (pnomef, "w")) == NULL) { Error = NO_FILE; return ; }
 
-  /* escrita da dimens„o da matriz no ficheiro */
+  /* escrita da dimens√£o da matriz no ficheiro */
   fprintf (PtF, "%d\t%d\n", pmat->NL, pmat->NC);
 
   /* escrita das componentes da matriz no ficheiro */
@@ -196,7 +313,7 @@ PtMatrix MatrixCreateFile (char *pnomef)
   if ( (PtF = fopen (pnomef, "r")) == NULL)
   { Error = NO_FILE; return NULL; }
 
-  /* leitura da dimens„o da matriz do ficheiro e criaÁ„o da matriz */
+  /* leitura da dimens√£o da matriz do ficheiro e cria√ß√£o da matriz */
   fscanf (PtF, "%d%d", &NL, &NC);
   if ((NL < 1) || (NC < 1)) { Error = BAD_SIZE; fclose (PtF); return NULL; }
 
@@ -216,36 +333,36 @@ PtMatrix MatrixCreateFile (char *pnomef)
 }
 
 /*******************************************************************************
- FunÁ„o auxiliar que verifica se as duas matrizes podem ser somadas ou
- comparadas, ou seja, se existem e se tÍm a mesma dimens„o. Devolve 1 em caso
- afirmativo e 0 em caso contr·rio. Valores de erro: NO_MATRIX ou DIF_SIZE.
+ Fun√ß√£o auxiliar que verifica se as duas matrizes podem ser somadas ou
+ comparadas, ou seja, se existem e se t√™m a mesma dimens√£o. Devolve 1 em caso
+ afirmativo e 0 em caso contr√°rio. Valores de erro: NO_MATRIX ou DIF_SIZE.
 *******************************************************************************/
 static int EqualDimensionMatrixes (PtMatrix pmat1, PtMatrix pmat2)
 {
   /* verifica se as duas matrizes existem */
   if ((pmat1 == NULL) || (pmat2 == NULL)) { Error = NO_MATRIX; return 0; }
 
-  /* verifica se as duas matrizes tÍm a mesma dimens„o */
+  /* verifica se as duas matrizes t√™m a mesma dimens√£o */
   if ((pmat1->NL != pmat2->NL) || (pmat1->NC != pmat2->NC))
   { Error = DIF_SIZE; return 0; }
 
-  /* as duas matrizes existem e tÍm a mesma dimens„o */
+  /* as duas matrizes existem e t√™m a mesma dimens√£o */
   return 1;
 }
 
 /*******************************************************************************
- FunÁ„o auxiliar que verifica se as duas matrizes podem ser multiplicadas, ou
- seja, se existem e se s„o encadeadas. Devolve 1 em caso afirmativo e 0 em caso
- contr·rio. Valores de erro: NO_MATRIX ou NO_CHAINED.
+ Fun√ß√£o auxiliar que verifica se as duas matrizes podem ser multiplicadas, ou
+ seja, se existem e se s√£o encadeadas. Devolve 1 em caso afirmativo e 0 em caso
+ contr√°rio. Valores de erro: NO_MATRIX ou NO_CHAINED.
 *******************************************************************************/
 static int ChainedMatrixes (PtMatrix pmat1, PtMatrix pmat2)
 {
   /* verifica se as duas matrizes existem */
   if ((pmat1 == NULL) || (pmat2 == NULL)) { Error = NO_MATRIX; return 0; }
 
-  /* verifica se as duas matrizes s„o encadeadas */
+  /* verifica se as duas matrizes s√£o encadeadas */
   if (pmat1->NC != pmat2->NL) { Error = NO_CHAINED; return 0; }
 
-  /* as duas matrizes existem e s„o encadeadas */
+  /* as duas matrizes existem e s√£o encadeadas */
   return 1;
 }
