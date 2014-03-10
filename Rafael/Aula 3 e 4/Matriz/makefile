@@ -2,15 +2,17 @@
 CC = gcc
 CFLAGS = -ansi -Wall
 
+#se tivesse mais .o colocava-se em baixo
 OBJM = matrix.o
 HEADERS = matrix.h
 
 OBJECTS = $(OBJM) testmatrix.o simmatrix.o
+#os executaveis
 EXES = tmat smat
 
 all:	$(EXES)
 
-tmat:	testmatrix.o $(OBJM) 
+tmat:	testmatrix.o $(OBJM)
 	$(CC) $(CFLAGS) testmatrix.o $(OBJM) -o tmat
 
 smat:	simmatrix.o $(OBJM)
