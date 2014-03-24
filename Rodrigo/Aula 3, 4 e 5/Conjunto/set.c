@@ -1,13 +1,13 @@
 /*******************************************************************************
 
- Ficheiro de implementação do Tipo de Dados Abstracto CONJUNTO (set.c).
- A estrutura de dados de suporte do conjunto é uma estrutura, constituída pelo
- campo Cardinal para armazenar o número de elementos existentes no conjunto e o
- campo Head que é a cabeça da lista biligada dos elementos do conjunto. A lista
- de elementos do conjunto, que são caracteres alfabéticos maiúsculos, está
+ Ficheiro de implementaÃ§Ã£o do Tipo de Dados Abstracto CONJUNTO (set.c).
+ A estrutura de dados de suporte do conjunto Ã© uma estrutura, constituÃ­da pelo
+ campo Cardinal para armazenar o nÃºmero de elementos existentes no conjunto e o
+ campo Head que Ã© a cabeÃ§a da lista biligada dos elementos do conjunto. A lista
+ de elementos do conjunto, que sÃ£o caracteres alfabÃ©ticos maiÃºsculos, estÃ¡
  ordenada por ordem crescente.
 
- Autor : António Manuel Adrego da Rocha    Data : Janeiro de 2006
+ Autor : AntÃ³nio Manuel Adrego da Rocha    Data : Janeiro de 2006
 
 *******************************************************************************/
 
@@ -17,43 +17,43 @@
 
 #include "set.h"    /* Ficheiro de interface do TDA */
 
-/************ Definição da Estrutura de Dados Interna do Conjunto ************/
+/************ DefiniÃ§Ã£o da Estrutura de Dados Interna do Conjunto ************/
 
 typedef struct node *PtNode;
 
-struct node    /* definição de um nó da lista biligada */
+struct node    /* definiÃ§Ã£o de um nÃ³ da lista biligada */
 {
   char *PtElem;  /* ponteiro para o elemento */
-  PtNode PtNext;  /* ponteiro para o nó seguinte */
-  PtNode PtPrev;  /* ponteiro para o nó anterior */
+  PtNode PtNext;  /* ponteiro para o nÃ³ seguinte */
+  PtNode PtPrev;  /* ponteiro para o nÃ³ anterior */
 };
 
 struct set
 {
   unsigned int Cardinal;   /* cardinal do conjunto */
-  PtNode Head;               /* cabeça da lista dos elementos do conjunto */
+  PtNode Head;               /* cabeÃ§a da lista dos elementos do conjunto */
 };
 
 /*********************** Controlo Centralizado de Erro ************************/
 
-static unsigned int Error = OK;  /* inicialização do erro */
+static unsigned int Error = OK;  /* inicializaÃ§Ã£o do erro */
 
 static char *ErrorMessages[] = {
                                  "Sem erro",
-                                 "O(s) conjunto(s) não existe(m)",
-                                 "Não há memória",
-                                 "O ficheiro não existe",
-                                 "O elemento não existe no conjunto",
-                                 "O elemento já existe no conjunto",
+                                 "O(s) conjunto(s) nÃ£o existe(m)",
+                                 "NÃ£o hÃ¡ memÃ³ria",
+                                 "O ficheiro nÃ£o existe",
+                                 "O elemento nÃ£o existe no conjunto",
+                                 "O elemento jÃ¡ existe no conjunto",
                                 };
 
 static char *AbnormalErrorMessage = "Erro desconhecido";
 
-/************** Número de mensagens de erro previstas no módulo ***************/
+/************** NÃºmero de mensagens de erro previstas no mÃ³dulo ***************/
 
 #define N (sizeof (ErrorMessages) / sizeof (char *))
 
-/************************ Alusão às Funções Auxiliares ************************/
+/************************ AlusÃ£o Ã s FunÃ§Ãµes Auxiliares ************************/
 
 static int ValidSets (PtSet, PtSet);
 static PtNode CreateElement (char);
@@ -61,7 +61,7 @@ static void DestroyElement (PtNode *);
 static PtNode PosInsert (PtSet, char);
 static PtNode PosDelete (PtSet, char);
 
-/*************************** Definição das Funções ****************************/
+/*************************** DefiniÃ§Ã£o das FunÃ§Ãµes ****************************/
 
 void SetClearError (void)
 {
@@ -76,22 +76,58 @@ int SetError (void)
 char *SetErrorMessage (void)
 {
   if (Error < N) return ErrorMessages[Error];
-  else return AbnormalErrorMessage;  /* não há mensagem de erro */
+  else return AbnormalErrorMessage;  /* nÃ£o hÃ¡ mensagem de erro */
 }
 
 PtSet SetCreate (void)
 {
-  /* insira o seu código */
+  PtSet Set;
+
+  /* cria o conjunto nulo */
+  if ((Set = (PtSet) malloc (sizeof (struct set))) == NULL)
+  { Error = NO_MEM; return NULL; }
+
+  Set->Head = NULL;
+  Set->Cardinal = 0;   
+
+  Error = OK;
+  return Set;    /* devolve o set criado */
 }
 
 void SetDestroy (PtSet *pset)
 {
-  /* insira o seu código */
+   PtSet TmpSet = *pset;
+
+  /* verifica se o vector existe */
+  if (TmpSet == NULL) { Error = NO_SET; return ; }
+
+  while(TmpSet->Cardinal){
+    SetDeleteElement(TmpSet, SetObserveElement(TmpSet,1));
+  }
+  /* libertaÃ§Ã£o da memÃ³ria dinÃ¢mica */
+  free (TmpSet->Head);
+  free (TmpSet);    /* liberta a memÃ³ria ocupada pelo vector */
+
+  Error = OK;
+  *pset = NULL;  /* coloca a referÃªncia a nulo */
 }
 
 PtSet SetCopy (PtSet pset)
 {
-  /* insira o seu código */
+  PtSet Copy; int i;
+
+  /* verifica se o vector existe */
+  if (pset == NULL) { Error = NO_SET; return NULL; }
+
+  /* criaÃ§Ã£o do conjunto copia nulo */
+  if ((Copy = SetCreate ()) == NULL) return NULL;
+
+  /* fazer a copia do conjunto */
+  for (i = 0; i < pset->Cardinal; i++){
+    SetInsertElement(Copy, SetObserveElement(pset, 1));
+  }
+
+  return Copy;  /* devolve o vector copia */
 }
 
 int SetCardinal (PtSet pset)
@@ -119,21 +155,21 @@ int SetInsertElement (PtSet pset, char pelem)
   if (pset->Head == NULL || pelem < *pset->Head->PtElem)
   {
     if ((NoTmp  = CreateElement (pelem)) == NULL) return 0;
-    /* inserção sem sucesso, porque não é possível criar o elemento */
+    /* inserÃ§Ã£o sem sucesso, porque nÃ£o Ã© possÃ­vel criar o elemento */
 
     NoTmp->PtNext = pset->Head; pset->Head = NoTmp;
     if (NoTmp->PtNext != NULL) NoTmp->PtNext->PtPrev = NoTmp;
   }
   else
   {
-    /* procurar se o elemento existe ou a sua posição de inserção caso não exista */
+    /* procurar se o elemento existe ou a sua posiÃ§Ã£o de inserÃ§Ã£o caso nÃ£o exista */
     if ((NoIns = PosInsert (pset, pelem)) == NULL) return 0; 
-    /* inserção sem sucesso, porque o elemento já existe no conjunto */
+    /* inserÃ§Ã£o sem sucesso, porque o elemento jÃ¡ existe no conjunto */
 
     if ((NoTmp = CreateElement (pelem)) == NULL) return 0;
-    /* inserção sem sucesso, porque não é possível criar o elemento */
+    /* inserÃ§Ã£o sem sucesso, porque nÃ£o Ã© possÃ­vel criar o elemento */
 
-    /* inserir à frente do nó da lista */
+    /* inserir Ã  frente do nÃ³ da lista */
     NoTmp->PtNext = NoIns->PtNext; 
     if (NoTmp->PtNext != NULL) NoTmp->PtNext->PtPrev = NoTmp;
     NoTmp->PtPrev = NoIns; NoIns->PtNext = NoTmp;
@@ -141,7 +177,7 @@ int SetInsertElement (PtSet pset, char pelem)
 
   pset->Cardinal++;  /* incrementa o cardinal do conjunto */
   Error = OK;
-  return 1;  /* inserção com sucesso */
+  return 1;  /* inserÃ§Ã£o com sucesso */
 }
 
 int SetDeleteElement (PtSet pset, char pelem)
@@ -154,23 +190,23 @@ int SetDeleteElement (PtSet pset, char pelem)
   }
 
   if ((NoRem = PosDelete (pset, pelem)) == NULL) return 0; 
-  /* remoção sem sucesso, porque o elemento ainda não existe no conjunto */
+  /* remoÃ§Ã£o sem sucesso, porque o elemento ainda nÃ£o existe no conjunto */
 
   if (NoRem == pset->Head)  /* primeiro elemento da lista */
   {
     if (NoRem->PtNext != NULL) NoRem->PtNext->PtPrev = NULL;
     pset->Head = NoRem->PtNext;
   }
-  else  /* noutra posição da lista */
+  else  /* noutra posiÃ§Ã£o da lista */
   {
     NoRem->PtPrev->PtNext = NoRem->PtNext;
     if (NoRem->PtNext != NULL) NoRem->PtNext->PtPrev = NoRem->PtPrev;
   }
 
-  DestroyElement (&NoRem);  /* liberta a memória ocupada pelo elemento */
+  DestroyElement (&NoRem);  /* liberta a memÃ³ria ocupada pelo elemento */
   pset->Cardinal--;  /* decrementa o cardinal do conjunto */
   Error = OK;
-  return 1;  /* remoção com sucesso */
+  return 1;  /* remoÃ§Ã£o com sucesso */
 }
 
 char SetObserveElement (PtSet pset, unsigned int ppos)
@@ -204,27 +240,118 @@ int SetSearchElement (PtSet pset, char pelem)
   if (PosDelete (pset, pelem) != NULL) return 1;  /* o elemento existe */
 
   Error = OK;
-  return 0;  /* o elemento não existe */
+  return 0;  /* o elemento nÃ£o existe */
 }
 
 PtSet SetReunion (PtSet pset1, PtSet pset2)
 {
-  /* insira o seu código */
+  PtSet reunion;
+  int i;
+
+  if(!ValidSets(pset1, pset2)){
+    return NULL;
+  }
+
+  if((reunion = SetCreate()) == NULL){
+    return NULL;
+  }
+  for(i = 0; i<pset1->Cardinal;i++){
+    if(SetInsertElement(reunion, SetObserveElement(pset1, i))){
+      SetDestroy(&reunion);
+      return NULL;
+    }
+  }
+  for(i = 0; i<pset2->Cardinal;i++){
+    char c = SetObserveElement(pset2,i);
+    if(!SetSearchElement(reunion, c)){
+      if(!SetInsertElement(reunion, c)){
+        SetDestroy(&reunion);
+        return NULL;
+      }
+    }
+  }
+  
+  Error = OK;
+  return reunion;
 }
 
 PtSet SetIntersection (PtSet pset1, PtSet pset2)
 {
-  /* insira o seu código */
+  PtSet intersection;
+  int i;
+  char c;
+
+  if(!ValidSets(pset1,pset2)){
+    return NULL;
+  }
+
+  if((intersection = SetCreate()) == NULL){
+    return NULL;
+  }
+
+  for(i = 0; i<pset1->Cardinal; i++){
+    c = SetObserveElement(pset1,i);
+    if(SetSearchElement(pset2, c)){
+      if(!SetInsertElement(intersection, c)){
+        SetDestroy(&intersection);
+        return NULL;
+      }
+    }
+  }
+  Error = OK;
+  return intersection;
 }
 
 PtSet SetSymmetricDifference (PtSet pset1, PtSet pset2)
 {
-  /* insira o seu código */
+  PtSet Symmetric;
+  int i;
+
+  if(!ValidSets(pset1,pset2)){
+    return NULL;
+  }
+
+   if((Symmetric = SetCreate()) == NULL){
+    return NULL;
+  }
+
+  for(i = 0; i<pset1->Cardinal;i++){
+    if(!SetSearchElement(pset2, SetObserveElement(pset1, i))){
+      if(!SetInsertElement(Symmetric, SetObserveElement(pset1,i))){
+        SetDestroy(&Symmetric);
+        return NULL;
+      }
+    }
+  }
+    for(i = 0; i<pset2->Cardinal;i++){
+    if(!SetSearchElement(pset1, SetObserveElement(pset2, i))){
+      if(!SetInsertElement(Symmetric, SetObserveElement(pset2,i))){
+        SetDestroy(&Symmetric);
+        return NULL;
+      }
+    }
+  }
+
+  Error = OK;
+  return Symmetric;
 }
 
 int SetEquals (PtSet pset1, PtSet pset2)
 {
-  /* insira o seu código */
+  int i;
+
+  if(!ValidSets(pset1, pset2)){
+    return 0;
+  }
+
+  for(i = 0; i<pset1->Cardinal; i++){
+    if(SetObserveElement(pset1,i) != SetObserveElement(pset2,i)){
+      Error = OK;
+      return 0;
+    }
+  }
+  Error = OK;
+  return 1;
 }
 
 void SetStoreFile (PtSet pset, char *pnomef)
@@ -257,7 +384,7 @@ PtSet SetCreateFile (char *pnomef)
   if ( (PtF = fopen (pnomef, "r")) == NULL)
   { Error = NO_FILE; return NULL; }
 
-  /* leitura do cardinal do conjunto do ficheiro e criação do conjunto vazio */
+  /* leitura do cardinal do conjunto do ficheiro e criaÃ§Ã£o do conjunto vazio */
   fscanf (PtF, "%u", &Cardinal); fscanf (PtF, "%*c");
 
   if ((Conj = SetCreate ()) == NULL)
@@ -280,11 +407,11 @@ PtSet SetCreateFile (char *pnomef)
   return Conj;
 }
 
-/********************** Definição das Funções Auxiliares **********************/
+/********************** DefiniÃ§Ã£o das FunÃ§Ãµes Auxiliares **********************/
 
 /*******************************************************************************
- Função auxiliar que verifica se os dois ponteiros são válidos. Devolve 1 em
- caso afirmativo e 0 em caso contrário.
+ FunÃ§Ã£o auxiliar que verifica se os dois ponteiros sÃ£o vÃ¡lidos. Devolve 1 em
+ caso afirmativo e 0 em caso contrÃ¡rio.
 *******************************************************************************/
 static int ValidSets (PtSet pset1, PtSet pset2)
 {
@@ -296,10 +423,10 @@ static int ValidSets (PtSet pset1, PtSet pset2)
 }
 
 /*******************************************************************************
- Função auxiliar que cria o elemento do conjunto. Começa por criar um nó da
+ FunÃ§Ã£o auxiliar que cria o elemento do conjunto. ComeÃ§a por criar um nÃ³ da
  lista biligada e depois cria o elemento, para onde copia o valor que se
- pretende armazenar. Devolve a referência do nó criado ou NULL, caso não consiga
- criar o nó ou o elemento, por falta de memória. Valores de erro: NO_MEM.
+ pretende armazenar. Devolve a referÃªncia do nÃ³ criado ou NULL, caso nÃ£o consiga
+ criar o nÃ³ ou o elemento, por falta de memÃ³ria. Valores de erro: NO_MEM.
 *******************************************************************************/
 static PtNode CreateElement (char pelem)
 {
@@ -318,16 +445,16 @@ static PtNode CreateElement (char pelem)
 
   *NoTmp->PtElem = pelem;  /* copia o valor */
   NoTmp->PtNext = NULL;  /* aponta para a frente para NULL */
-  NoTmp->PtPrev = NULL;  /* aponta para a trás para NULL */
+  NoTmp->PtPrev = NULL;  /* aponta para a trÃ¡s para NULL */
 
-  return NoTmp;  /* devolver a referência do nó criado */
+  return NoTmp;  /* devolver a referÃªncia do nÃ³ criado */
 }
 
 /*******************************************************************************
- Função auxiliar que elimina o elemento do conjunto, indicando para esse feito
- o nó onde o elemento está dependurado. Começa por verificar se o nó é valido,
- após o que liberta a memória ocupada pelo elemento e pelo nó da lista. Como esta
- função é correctamente invocada, ela não precisa de actualizar a variável de erro.
+ FunÃ§Ã£o auxiliar que elimina o elemento do conjunto, indicando para esse feito
+ o nÃ³ onde o elemento estÃ¡ dependurado. ComeÃ§a por verificar se o nÃ³ Ã© valido,
+ apÃ³s o que liberta a memÃ³ria ocupada pelo elemento e pelo nÃ³ da lista. Como esta
+ funÃ§Ã£o Ã© correctamente invocada, ela nÃ£o precisa de actualizar a variÃ¡vel de erro.
 *******************************************************************************/
 static void DestroyElement (PtNode *pnode)
 {
@@ -339,9 +466,9 @@ static void DestroyElement (PtNode *pnode)
 }
 
 /*******************************************************************************
- Função auxiliar que pesquisa um elemento no conjunto, para determinar a sua
- posição para eventual remoção do conjunto. Devolve o endereço do nó onde deve
- ser feita a remoção, ou NULL caso o elemento ainda não exista no conjunto.
+ FunÃ§Ã£o auxiliar que pesquisa um elemento no conjunto, para determinar a sua
+ posiÃ§Ã£o para eventual remoÃ§Ã£o do conjunto. Devolve o endereÃ§o do nÃ³ onde deve
+ ser feita a remoÃ§Ã£o, ou NULL caso o elemento ainda nÃ£o exista no conjunto.
 *******************************************************************************/
 static PtNode PosDelete (PtSet pset, char pelem)
 {
@@ -353,15 +480,15 @@ static PtNode PosDelete (PtSet pset, char pelem)
     if (*Tmp->PtElem == pelem) return Tmp;  /* elemento encontrado */
 
   Error = NO_ELEM; 
-  return NULL;  /* elemento não encontrado */
+  return NULL;  /* elemento nÃ£o encontrado */
 }
 
 /*******************************************************************************
- Função auxiliar que pesquisa um elemento no conjunto, para determinar a sua
- posição para eventual colocação no conjunto. Devolve o endereço do nó à frente
- do qual deve ser feita a inserção, ou NULL caso o elemento já exista no
- conjunto. A função é invocada sabendo à partida que o conjunto não está vazio
- ou que o elemento não vai ser inserido no início do conjunto. 
+ FunÃ§Ã£o auxiliar que pesquisa um elemento no conjunto, para determinar a sua
+ posiÃ§Ã£o para eventual colocaÃ§Ã£o no conjunto. Devolve o endereÃ§o do nÃ³ Ã  frente
+ do qual deve ser feita a inserÃ§Ã£o, ou NULL caso o elemento jÃ¡ exista no
+ conjunto. A funÃ§Ã£o Ã© invocada sabendo Ã  partida que o conjunto nÃ£o estÃ¡ vazio
+ ou que o elemento nÃ£o vai ser inserido no inÃ­cio do conjunto. 
 *******************************************************************************/
 static PtNode PosInsert (PtSet pset, char pelem)
 {
@@ -370,7 +497,7 @@ static PtNode PosInsert (PtSet pset, char pelem)
   for (Tmp = pset->Head; Tmp != NULL; NodePrev = Tmp, Tmp = Tmp->PtNext)
     if (*Tmp->PtElem >= pelem) break;
 
-  /* se o elemento não foi encontrado então entra à frente do nó anterior */
+  /* se o elemento nÃ£o foi encontrado entÃ£o entra Ã  frente do nÃ³ anterior */
   if (Tmp == NULL || *Tmp->PtElem > pelem) return NodePrev;
   else
   {
