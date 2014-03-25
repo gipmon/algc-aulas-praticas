@@ -90,9 +90,9 @@ void PolyDestroy (PtPoly *ppol)
 {
   PtPoly TmpPoly = *ppol;
 
-  if (TmpPoly == NULL) { 
-    Error = NO_POLY; 
-    return ; 
+  if (TmpPoly == NULL){
+    Error = NO_POLY;
+    return ;
   }
 
   free (TmpPoly->Poly);
@@ -104,8 +104,24 @@ void PolyDestroy (PtPoly *ppol)
 
 PtPoly PolyCopy (PtPoly ppol)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Copy;
+  int i;
+
+  if(ppol == NULL){
+    Error = NO_POLY;
+    return NULL;
+  }
+
+  if((Copy = PolyCreate(ppol->Degree)) == NULL){
+    return NULL;
+  }
+
+  for(i = 0; i < ppol->Degree+1; i++) {
+    Copy->Poly[i] = ppol->Poly[i];
+  }
+
+  Error = OK;
+  return Copy;
 }
 
 int PolyDegree (PtPoly ppol)
