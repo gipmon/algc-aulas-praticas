@@ -265,7 +265,7 @@ PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
 
   for(i=0; i<=ppol1->Degree; i++){
     for (j=0; j <= ppol2->Degree; j++){
-      Mul->Poly[i+j] = ppol1->Poly[i] * ppol2->Poly[j];
+      Mul->Poly[i+j] += ppol1->Poly[i] * ppol2->Poly[j];
     }
   }
 
@@ -274,19 +274,75 @@ PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
 
 int PolyEquals (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
-  return 0;
+  int i;
+
+  if(!ValidPolys(ppol1, ppol2)){
+    return 0;
+  }
+
+  if(ppol1->Degree != ppol2->Degree){
+    return 0;
+  }
+
+  for(i = 0; i <= ppol1->Degree; i++){
+    if(ppol1->Poly[i] != ppol2->Poly[i]){
+      return 0;
+    }
+  }
+
+  return 1;
 }
 
 void PolyStoreFile (PtPoly ppol, char *pnomef)
 {
-  /* insira o seu código */
+  FILE *PtF;
+  unsigned int i;
+
+  if (ppol == NULL){
+    Error = NO_POLY;
+    return ;
+  }
+
+  if ((PtF = fopen (pnomef, "w")) == NULL){
+    Error = NO_FILE;
+    return ;
+  }
+
+  fprintf (PtF, "%u\n", ppol->Degree);
+
+  for (i = 0; i <= ppol->Degree; i++)
+    fprintf (PtF, "%lf\n", ppol->Poly[i]);
+
+  Error = OK;
+  fclose (PtF);  /* fecho do ficheiro */
 }
 
 PtPoly PolyCreateFile (char *pnomef)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Poly;
+  FILE *PtF;
+  unsigned int degree, i;
+
+  if ((PtF = fopen (pnomef, "r")) == NULL){
+    Error = NO_FILE;
+    return NULL;
+  }
+
+  fscanf (PtF, "%u", &degree);
+  if (degree < 1) {
+    Error = BAD_SIZE;
+    fclose (PtF);
+    return NULL;
+  }
+
+  if ((Poly = PolyCreate (degree)) == NULL) { fclose (PtF); return NULL; }
+
+  for (i = 0; i <= degree; i++) 
+    fscanf (PtF, "%lf", Poly->Poly+i);
+
+  fclose (PtF); 
+
+  return Poly; 
 }
 
 double PolyEvaluation (PtPoly ppoly, double px)
