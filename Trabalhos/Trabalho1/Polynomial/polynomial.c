@@ -190,8 +190,33 @@ int PolyIsNull (PtPoly ppol)
 
 PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Add;
+  int i, degree;
+
+  if(!ValidPolys(ppol1, ppol2)) {
+    return NULL;
+  }
+
+  if(ppol1->Degree > ppol2->Degree) {
+    degree = ppol1->Degree;
+  } else {
+    degree = ppol2->Degree;
+  }
+
+  if((Add = PolyCreate(degree)) == NULL) {
+    return NULL;
+  }
+
+  for(i = 0; i < Degree; i++) {
+    if(i < ppol1->Degree) {
+      Add->Poly[i] += ppol1->Poly[i];
+    }
+    if(i < ppol2->degree) {
+      Add->Poly[i] += ppol2->Poly[i];
+    }
+  }
+
+  return Add;
 }
 
 PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
