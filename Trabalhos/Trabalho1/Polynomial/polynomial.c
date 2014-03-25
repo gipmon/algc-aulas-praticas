@@ -207,11 +207,11 @@ PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
     return NULL;
   }
 
-  for(i = 0; i < Degree; i++) {
+  for(i = 0; i < degree; i++) {
     if(i < ppol1->Degree) {
       Add->Poly[i] += ppol1->Poly[i];
     }
-    if(i < ppol2->degree) {
+    if(i < ppol2->Degree) {
       Add->Poly[i] += ppol2->Poly[i];
     }
   }
