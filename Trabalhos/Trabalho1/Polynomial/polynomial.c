@@ -1,12 +1,12 @@
 /*******************************************************************************
 
- Ficheiro de implementação do Tipo de Dados Abstrato POLINOMIO (polynomial.c).
- A estrutura de dados de suporte do polinómio é uma estrutura, constituída pelo
- campo de tipo inteiro Degree para armazenar o grau do polinómio e o campo de
- tipo ponteiro Poly, para representar a sequência atribuída dinamicamente, que
+ Ficheiro de implementaÃ§Ã£o do Tipo de Dados Abstrato POLINOMIO (polynomial.c).
+ A estrutura de dados de suporte do polinÃ³mio Ã© uma estrutura, constituÃ­da pelo
+ campo de tipo inteiro Degree para armazenar o grau do polinÃ³mio e o campo de
+ tipo ponteiro Poly, para representar a sequÃªncia atribuÃ­da dinamicamente, que
  vai armazenar os seus coeficientes reais.
  
- Autor : António Manuel Adrego da Rocha    Data : Março de 2014
+ Autor : AntÃ³nio Manuel Adrego da Rocha    Data : MarÃ§o de 2014
 
 *******************************************************************************/
 
@@ -16,17 +16,17 @@
 
 #include "polynomial.h"    /* Ficheiro de interface do TDA */
 
-/************ Definição da Estrutura de Dados Interna do POLINOMIO ************/
+/************ DefiniÃ§Ã£o da Estrutura de Dados Interna do POLINOMIO ************/
 
 struct poly
 {
-  unsigned int Degree;  /* grau do polinómio */
-  double *Poly;      /* ponteiro para os coeficientes do polinómio */
+  unsigned int Degree;  /* grau do polinÃ³mio */
+  double *Poly;      /* ponteiro para os coeficientes do polinÃ³mio */
 };
 
 /*********************** Controlo Centralizado de Erro ************************/
 
-static unsigned int Error = OK;  /* inicialização do erro */
+static unsigned int Error = OK;  /* inicializaÃ§Ã£o do erro */
 
 static char *ErrorMessages[] = {
                                  "Sem erro", "polinomio(s) inexistente(s)",
@@ -36,15 +36,15 @@ static char *ErrorMessages[] = {
 
 static char *AbnormalErrorMessage = "erro desconhecido";
 
-/************** Número de mensagens de erro previstas no módulo ***************/
+/************** NÃºmero de mensagens de erro previstas no mÃ³dulo ***************/
 
 #define N (sizeof (ErrorMessages) / sizeof (char *))
 
-/************************ Alusão às Funções Auxiliares ************************/
+/************************ AlusÃ£o Ã s FunÃ§Ãµes Auxiliares ************************/
 
 static int ValidPolys (PtPoly, PtPoly);
 
-/*************************** Definição das Funções ****************************/
+/*************************** DefiniÃ§Ã£o das FunÃ§Ãµes ****************************/
 
 void PolyClearError (void)
 {
@@ -59,7 +59,7 @@ int PolyError (void)
 char *PolyErrorMessage (void)
 {
   if (Error < N) return ErrorMessages[Error];
-  else return AbnormalErrorMessage;    /* não há mensagem de erro */
+  else return AbnormalErrorMessage;    /* nÃ£o hÃ¡ mensagem de erro */
 }
 
 PtPoly PolyCreate (unsigned int pdegree)
@@ -88,87 +88,98 @@ PtPoly PolyCreate (unsigned int pdegree)
 
 void PolyDestroy (PtPoly *ppol)
 {
-  /* insira o seu código */
+  PtPoly TmpPoly = *ppol;
+
+  if (TmpPoly == NULL) { 
+    Error = NO_POLY; 
+    return ; 
+  }
+
+  free (TmpPoly->Poly);
+  free (TmpPoly);
+
+  Error = OK;
+  *ppol = NULL;
 }
 
 PtPoly PolyCopy (PtPoly ppol)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 int PolyDegree (PtPoly ppol)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return 0;
 }
 
 void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
 }
 
 double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return 0.0;
 }
 
 int PolyIsNull (PtPoly ppol)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return 0;
 }
 
 PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 int PolyEquals (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return 0;
 }
 
 void PolyStoreFile (PtPoly ppol, char *pnomef)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
 }
 
 PtPoly PolyCreateFile (char *pnomef)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 double PolyEvaluation (PtPoly ppoly, double px)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return 0.0;
 }
 
 /*******************************************************************************
-  Função auxiliar que verifica se os dois polinómios existem. Devolve 1 em caso
-  afirmativo e 0 no caso contrário.
+  FunÃ§Ã£o auxiliar que verifica se os dois polinÃ³mios existem. Devolve 1 em caso
+  afirmativo e 0 no caso contrÃ¡rio.
 *******************************************************************************/
 static int ValidPolys (PtPoly ppol1, PtPoly ppol2)
 {
-  /* verifica se os dois polinómios existem */
+  /* verifica se os dois polinÃ³mios existem */
   if ((ppol1 == NULL) || (ppol2 == NULL)) { Error = NO_POLY; return 0; }
 
-  return 1;  /* os dois polinómios existem */
+  return 1;  /* os dois polinÃ³mios existem */
 }

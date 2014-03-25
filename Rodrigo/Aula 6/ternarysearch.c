@@ -1,8 +1,8 @@
 /*******************************************************************************
 
- Algoritmos de pesquisa tern·ria (quatro versıes repetitivas).
+ Algoritmos de pesquisa tern√°ria (quatro vers√µes repetitivas).
 
- Autor : AntÛnio Manuel Adrego da Rocha    Data : MarÁo de 2014
+ Autor : Ant√≥nio Manuel Adrego da Rocha    Data : Mar√ßo de 2014
 
 *******************************************************************************/
 
