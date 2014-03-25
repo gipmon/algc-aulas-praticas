@@ -137,7 +137,18 @@ int PolyDegree (PtPoly ppol)
 
 void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
 {
-  /* insira o seu código */
+  if(ppol == NULL){
+    Error = NO_POLY;
+    return ;
+  }
+
+  if (ppos > ppol->Degree) {
+    Error = BAD_INDEX;
+    return ;
+  }
+
+  Error = OK;
+  ppol->Poly[ppos] = pval;
 }
 
 double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
