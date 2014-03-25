@@ -66,7 +66,7 @@ PtPoly PolyCreate (unsigned int pdegree)
 {
   PtPoly Poly;
 
-  if(pDegree < 0){
+  if(pdegree < 0){
     Error = BAD_SIZE; return NULL;
   }
 
@@ -74,13 +74,13 @@ PtPoly PolyCreate (unsigned int pdegree)
     Error = NO_MEM; return NULL;
   }
 
-  if((Poly->Poly = (double *) calloc (pDegree+1, sizeof (double))) == NULL){
-    free (Poly);
+  if((Poly->Poly = (double *) calloc (pdegree+1, sizeof (double))) == NULL){
+    free(Poly);
     Error = NO_MEM;
     return NULL;
   }
 
-  Poly->Degree = pDegree;
+  Poly->Degree = pdegree;
 
   Error = OK;
   return Poly;
@@ -90,7 +90,7 @@ void PolyDestroy (PtPoly *ppol)
 {
   PtPoly TmpPoly = *ppol;
 
-  if (TmpPoly == NULL){
+  if(TmpPoly == NULL){
     Error = NO_POLY;
     return ;
   }
@@ -116,7 +116,7 @@ PtPoly PolyCopy (PtPoly ppol)
     return NULL;
   }
 
-  for(i = 0; i < ppol->Degree+1; i++) {
+  for(i = 0; i <= ppol->Degree; i++) {
     Copy->Poly[i] = ppol->Poly[i];
   }
 
@@ -142,7 +142,7 @@ void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
     return ;
   }
 
-  if (ppos > ppol->Degree) {
+  if(ppos > ppol->Degree){
     Error = BAD_INDEX;
     return ;
   }
@@ -153,12 +153,12 @@ void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
 
 double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 {
-  if (ppol == NULL){
+  if(ppol == NULL){
     Error = NO_POLY;
     return 0.0;
   }
 
-  if (ppos > ppol->Degree){
+  if(ppos > ppol->Degree){
     Error = BAD_INDEX;
     return 0.0;
   }
@@ -172,14 +172,14 @@ int PolyIsNull (PtPoly ppol)
 {
   int i;
 
-  if (ppol == NULL){
+  if(ppol == NULL){
     Error = NO_POLY;
     return 0;
   }
 
   Error = OK;
 
-  for (i = 0; i <= ppol->Degree; i++){
+  for(i = 0; i <= ppol->Degree; i++){
     if (ppol->Poly[i]){
       return 0;
     }
@@ -207,7 +207,7 @@ PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
     return NULL;
   }
 
-  for(i = 0; i < degree; i++) {
+  for(i = 0; i <= degree; i++){
     if(i < ppol1->Degree) {
       Add->Poly[i] += ppol1->Poly[i];
     }
@@ -221,8 +221,33 @@ PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
 
 PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Sub;
+  int i, degree;
+
+  if(!ValidPolys(ppol1, ppol2)) {
+    return NULL;
+  }
+
+  if(ppol1->Degree > ppol2->Degree) {
+    degree = ppol1->Degree;
+  } else {
+    degree = ppol2->Degree;
+  }
+
+  if((Sub = PolyCreate(degree)) == NULL) {
+    return NULL;
+  }
+
+  for(i = 0; i <= degree; i++){
+    if(i < ppol1->Degree+1) {
+      Sub->Poly[i] += ppol1->Poly[i];
+    }
+    if(i < ppol2->Degree+1) {
+      Sub->Poly[i] -= ppol2->Poly[i];
+    }
+  }
+
+  return Sub;
 }
 
 PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
