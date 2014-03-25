@@ -252,8 +252,24 @@ PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
 
 PtPoly PolyMultiplication (PtPoly ppol1, PtPoly ppol2)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Mul;
+  int i, j;
+
+  if(!ValidPolys(ppol1, ppol2)){
+    return NULL;
+  }
+
+  if((Mul = PolyCreate(ppol1->Degree + ppol2->Degree)) == NULL){
+    return NULL;
+  }
+
+  for(i=0; i<=ppol1->Degree; i++){
+    for (j=0; j <= ppol2->Degree; j++){
+      Mul->Poly[i+j] = ppol1->Poly[i] * ppol2->Poly[j];
+    }
+  }
+
+  return Mul;
 }
 
 int PolyEquals (PtPoly ppol1, PtPoly ppol2)
