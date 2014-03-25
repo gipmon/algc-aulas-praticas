@@ -347,8 +347,14 @@ PtPoly PolyCreateFile (char *pnomef)
 
 double PolyEvaluation (PtPoly ppoly, double px)
 {
-  /* insira o seu código */
-  return 0.0;
+  int i;
+  double result = ppoly->Poly[ppoly->Degree]
+
+  for(i = ppoly->Degree-1; i>0; i--){
+    result *= px;
+    result += ppoly->Poly[i];
+  }
+  return result;
 }
 
 /*******************************************************************************
