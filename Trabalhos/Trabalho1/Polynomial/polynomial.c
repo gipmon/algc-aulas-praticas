@@ -126,8 +126,13 @@ PtPoly PolyCopy (PtPoly ppol)
 
 int PolyDegree (PtPoly ppol)
 {
-  /* insira o seu código */
-  return 0;
+  if(ppol == NULL){
+    Error = NO_POLY;
+    return -1;
+  }
+
+  Error = OK;
+  return ppol->Degree;
 }
 
 void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
