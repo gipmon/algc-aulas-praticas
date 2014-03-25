@@ -64,8 +64,26 @@ char *PolyErrorMessage (void)
 
 PtPoly PolyCreate (unsigned int pdegree)
 {
-  /* insira o seu código */
-  return NULL;
+  PtPoly Poly;
+
+  if(pDegree < 0){
+    Error = BAD_SIZE; return NULL;
+  }
+
+  if((Poly = (PtPoly) malloc (sizeof (struct poly))) == NULL){
+    Error = NO_MEM; return NULL;
+  }
+
+  if((Poly->Poly = (double *) calloc (pDegree+1, sizeof (double))) == NULL){
+    free (Poly);
+    Error = NO_MEM;
+    return NULL;
+  }
+
+  Poly->Degree = pDegree;
+
+  Error = OK;
+  return Poly;
 }
 
 void PolyDestroy (PtPoly *ppol)
