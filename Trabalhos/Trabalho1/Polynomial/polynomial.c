@@ -66,10 +66,6 @@ PtPoly PolyCreate (unsigned int pdegree)
 {
   PtPoly Poly;
 
-  /*if(pdegree < 0){
-    Error = BAD_SIZE; return NULL;
-  }*/
-
   if((Poly = (PtPoly) malloc (sizeof (struct poly))) == NULL){
     Error = NO_MEM; return NULL;
   }
@@ -208,10 +204,10 @@ PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
   }
 
   for(i = 0; i <= degree; i++){
-    if(i < ppol1->Degree) {
+    if(i <= ppol1->Degree) {
       Add->Poly[i] += ppol1->Poly[i];
     }
-    if(i < ppol2->Degree) {
+    if(i <= ppol2->Degree) {
       Add->Poly[i] += ppol2->Poly[i];
     }
   }
@@ -239,10 +235,10 @@ PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
   }
 
   for(i = 0; i <= degree; i++){
-    if(i < ppol1->Degree) {
+    if(i <= ppol1->Degree) {
       Sub->Poly[i] += ppol1->Poly[i];
     }
-    if(i < ppol2->Degree) {
+    if(i <= ppol2->Degree) {
       Sub->Poly[i] -= ppol2->Poly[i];
     }
   }
