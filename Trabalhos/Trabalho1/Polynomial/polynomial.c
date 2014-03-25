@@ -5,12 +5,12 @@
  campo de tipo inteiro Degree para armazenar o grau do polinómio e o campo de
  tipo ponteiro Poly, para representar a sequência atribuída dinamicamente, que
  vai armazenar os seus coeficientes reais.
- 
+
  Autor : António Manuel Adrego da Rocha    Data : Março de 2014
 
 *******************************************************************************/
 
-#include <stdio.h>  
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -95,8 +95,8 @@ void PolyDestroy (PtPoly *ppol)
     return ;
   }
 
-  free (TmpPoly->Poly);
-  free (TmpPoly);
+  free(TmpPoly->Poly);
+  free(TmpPoly);
 
   Error = OK;
   *ppol = NULL;
@@ -298,20 +298,21 @@ void PolyStoreFile (PtPoly ppol, char *pnomef)
   FILE *PtF;
   unsigned int i;
 
-  if (ppol == NULL){
+  if(ppol == NULL){
     Error = NO_POLY;
     return ;
   }
 
-  if ((PtF = fopen (pnomef, "w")) == NULL){
+  if((PtF = fopen (pnomef, "w")) == NULL){
     Error = NO_FILE;
     return ;
   }
 
   fprintf (PtF, "%u\n", ppol->Degree);
 
-  for (i = 0; i <= ppol->Degree; i++)
+  for (i = 0; i <= ppol->Degree; i++){
     fprintf (PtF, "%lf\n", ppol->Poly[i]);
+  }
 
   Error = OK;
   fclose (PtF);  /* fecho do ficheiro */
@@ -323,37 +324,47 @@ PtPoly PolyCreateFile (char *pnomef)
   FILE *PtF;
   unsigned int degree, i;
 
-  if ((PtF = fopen (pnomef, "r")) == NULL){
+  if((PtF = fopen (pnomef, "r")) == NULL){
     Error = NO_FILE;
     return NULL;
   }
 
   fscanf (PtF, "%u", &degree);
-  if (degree < 1) {
+  if(degree < 1){
     Error = BAD_SIZE;
     fclose (PtF);
     return NULL;
   }
 
-  if ((Poly = PolyCreate (degree)) == NULL) { fclose (PtF); return NULL; }
+  if((Poly = PolyCreate (degree)) == NULL){
+    fclose (PtF);
+    return NULL;
+  }
 
-  for (i = 0; i <= degree; i++) 
+  for (i = 0; i <= degree; i++){
     fscanf (PtF, "%lf", Poly->Poly+i);
+  }
 
-  fclose (PtF); 
-
-  return Poly; 
+  fclose (PtF);
+  return Poly;
 }
 
 double PolyEvaluation (PtPoly ppoly, double px)
 {
   int i;
-  double result = ppoly->Poly[ppoly->Degree]
+  double result = ppoly->Poly[ppoly->Degree];
 
-  for(i = ppoly->Degree-1; i>0; i--){
+  if(ppoly == NULL){
+    Error = NO_POLY;
+    return 0;
+  }
+
+  for(i = ppoly->Degree; i>=0; i--){
     result *= px;
     result += ppoly->Poly[i];
   }
+
+  Error = OK;
   return result;
 }
 
