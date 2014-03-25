@@ -148,7 +148,7 @@ void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
   }
 
   Error = OK;
-  ppol->Poly[ppos] = pval;
+  ppol->Poly[ppos] = pvalue;
 }
 
 double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
