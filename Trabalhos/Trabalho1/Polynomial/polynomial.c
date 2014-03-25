@@ -153,14 +153,14 @@ void PolyModifyCoefficient (PtPoly ppol, unsigned int ppos, double pvalue)
 
 double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 {
-  if (ppol == NULL) { 
-    Error = NO_POLY; 
-    return 0.0; 
+  if (ppol == NULL){
+    Error = NO_POLY;
+    return 0.0;
   }
-  
-  if (ppos > ppol->Degree) { 
-    Error = BAD_INDEX; 
-    return 0.0; 
+
+  if (ppos > ppol->Degree){
+    Error = BAD_INDEX;
+    return 0.0;
   }
 
   Error = OK;
@@ -170,8 +170,22 @@ double PolyObserveCoefficient (PtPoly ppol, unsigned int ppos)
 
 int PolyIsNull (PtPoly ppol)
 {
-  /* insira o seu código */
-  return 0;
+  int i;
+
+  if (ppol == NULL){
+    Error = NO_POLY;
+    return 0;
+  }
+
+  Error = OK;
+
+  for (i = 0; i <= ppol->Degree; i++){
+    if (ppol->Poly[i]){
+      return 0;
+    }
+  }
+
+  return 1;
 }
 
 PtPoly PolyAddition (PtPoly ppol1, PtPoly ppol2)
