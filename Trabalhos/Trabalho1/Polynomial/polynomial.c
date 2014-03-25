@@ -66,9 +66,9 @@ PtPoly PolyCreate (unsigned int pdegree)
 {
   PtPoly Poly;
 
-  if(pdegree < 0){
+  /*if(pdegree < 0){
     Error = BAD_SIZE; return NULL;
-  }
+  }*/
 
   if((Poly = (PtPoly) malloc (sizeof (struct poly))) == NULL){
     Error = NO_MEM; return NULL;
@@ -359,7 +359,7 @@ double PolyEvaluation (PtPoly ppoly, double px)
     return 0;
   }
 
-  for(i = ppoly->Degree; i>=0; i--){
+  for(i = ppoly->Degree-1; i>=0; i--){
     result *= px;
     result += ppoly->Poly[i];
   }
