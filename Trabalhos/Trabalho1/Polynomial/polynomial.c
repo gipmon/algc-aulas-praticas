@@ -239,10 +239,10 @@ PtPoly PolySubtraction (PtPoly ppol1, PtPoly ppol2)
   }
 
   for(i = 0; i <= degree; i++){
-    if(i < ppol1->Degree+1) {
+    if(i < ppol1->Degree) {
       Sub->Poly[i] += ppol1->Poly[i];
     }
-    if(i < ppol2->Degree+1) {
+    if(i < ppol2->Degree) {
       Sub->Poly[i] -= ppol2->Poly[i];
     }
   }
