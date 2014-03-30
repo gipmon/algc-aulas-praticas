@@ -244,8 +244,32 @@ PtSMatrix SMatrixSub (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 {
-  /* insira o seu código */
-  return NULL;
+  PtSMatrix mul;
+  int i, j, k;
+
+  if ((pmatrix1 == NULL) || (pmatrix2 == NULL)){
+    Error = NO_MATRIX;
+    return 0;
+  }
+
+  if(!EqualDimensionMatrixes(pmatrix1, pmatrix2)){
+    Error = NO_CHAINED;
+    return NULL;
+  }
+
+  if ((mul = MatrixCreate (pmatrix1->Size, pmatrix1->Size)) == NULL)
+    return NULL;
+
+  for(k=0; k < pmatrix1->Size; k++){
+    for(i=0; i < pmatrix1->Size; i++){
+      for(j=0; j < pmatrix2->Size; j++){
+        mul->Matrix[i][j] = pmatrix1->Matrix[i][k] * pmatrix2->Matrix[k][j];
+      }
+    }
+  }
+
+  Error = OK;
+  return mul;
 }
 
 double SMatrixDeterminant (PtSMatrix pmatrix)
