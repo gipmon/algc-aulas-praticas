@@ -221,8 +221,25 @@ PtSMatrix SMatrixAdd (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 PtSMatrix SMatrixSub (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 {
-  /* insira o seu código */
-  return NULL;
+  if(!EqualDimensionMatrixes(pmatrix1, pmatrix2)){
+    Error = BAD_SIZE;
+    return NULL;
+  }
+
+  PtSMatrix Result;
+  unsigned int i, j;
+
+  if ((Result = MatrixCreate(pmatrix1->Size, pmatrix1->Size)) == NULL)
+    return NULL;
+
+  for(i=0; i<Result->Size; i++){
+    for(j=0; j<Result->Size; j++){
+      Result->Matrix[i][j] = MatrixObserveElement(pmatrix1, i, j) - MatrixObserveElement(pmatrix2, i, j);
+    }
+  }
+
+  Error = OK;
+  return Result;
 }
 
 PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
