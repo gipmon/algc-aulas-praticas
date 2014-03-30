@@ -11,7 +11,7 @@
 
 *******************************************************************************/
 
-#include <stdio.h>
+#include <stdio.h>  
 #include <stdlib.h>
 
 #include "matrix.h"  /* Ficheiro de interface do TDA */
@@ -72,76 +72,86 @@ char *MatrixErrorMessage (void)
 PtMatrix MatrixCreate (unsigned int pnl, unsigned int pnc)
 {
   PtMatrix Matrix;
-  unsigned int l, i;
-
-  if((Matrix=(PtMatrix) malloc (sizeof(struct matrix)))==NULL)
-  {
-    Error = NO_MEM; return NULL;
-  }
-  if((Matrix->Matrix=(int **) calloc (pnl, sizeof(int*)))==NULL){
-    free (Matrix);
-    Error=NO_MEM;
+  int I;
+  if(pnl < 1 || pnc < 1) {
+    Error = BAD_SIZE;
     return NULL;
   }
-  for(l=0; l<pnl; l++){
-    if((Matrix->Matrix[l]=(int *) calloc (pnc, sizeof(int)))==NULL){
-      for (i = 0; i < l; ++i)
-      {
-        free(Matrix->Matrix[i]);
+
+  if((Matrix = (PtMatrix) malloc(sizeof (struct matrix))) == NULL) {
+    Error = NO_MEM;
+    return NULL;
+  }
+
+  if((Matrix->Matrix = (int **) calloc(pnl, sizeof(int *))) == NULL) {
+    free(Matrix);
+    Error = NO_MEM;
+    return NULL;
+  }
+
+  for(I = 0; I < pnl; ++I) {
+    if((Matrix->Matrix[I] = (int *) calloc(pnc, sizeof(int))) == NULL) {
+      int J;
+      for(J = 0; J < I; ++J) {
+        free(Matrix->Matrix[J]);
       }
       free(Matrix->Matrix);
       free(Matrix);
-      Error=NO_MEM;
+      Error = NO_MEM;
       return NULL;
     }
   }
+
   Matrix->NL = pnl;
   Matrix->NC = pnc;
+
   Error = OK;
+
   return Matrix;
 }
 
 void MatrixDestroy (PtMatrix *pmat)
 {
-  if(*pmat==NULL){
+  PtMatrix TmpMatrix = *pmat;
+  int I;
+
+  if(TmpMatrix == NULL) {
     Error = NO_MATRIX;
     return;
   }
 
-  unsigned int i;
-
-  for (i = 0; i < (*pmat)->NL; ++i)
-  {
-    free((*pmat)->Matrix[i]);
+  for(I = 0; I < TmpMatrix->NL; ++I) {
+    free(TmpMatrix->Matrix[I]);
   }
+  free(TmpMatrix->Matrix);
+  free(TmpMatrix);
 
-  free((*pmat)->Matrix);
-  free(*pmat);
-  *pmat = NULL;
   Error = OK;
+  *pmat = NULL;
 }
 
-PtMatrix MatrixCopy (PtMatrix pmat){
-  PtMatrix Matrix;
-  unsigned int l, i;
+PtMatrix MatrixCopy (PtMatrix pmat)
+{
+  PtMatrix Copy;
+  int I, J;
 
-  /* verifica se a matrix existe */
-  if (pmat == NULL) {
+  if(pmat == NULL) {
     Error = NO_MATRIX;
     return NULL;
   }
 
-  /* criação do matrix copia nulo */
-  if ((Matrix = MatrixCreate(pmat->NL, pmat->NC)) == NULL)
+  if((Copy = MatrixCreate(pmat->NL, pmat->NC)) == NULL) {
     return NULL;
+  }
 
-  for(l=0; l<Matrix->NL; l++){
-    for (i = 0; i < Matrix->NC; ++i){
-      Matrix->Matrix[l][i] = pmat->Matrix[l][i];
+  for(I = 0; I < pmat->NL; ++I) {
+    for(J = 0; J < pmat->NC; ++J) {
+      Copy->Matrix[I][J] = pmat->Matrix[I][J];
     }
   }
 
-  return Matrix;
+  Error = OK;
+  return Copy;
 }
 
 void MatrixSize (PtMatrix pmat, unsigned int *pnl, unsigned int *pnc)
@@ -149,7 +159,7 @@ void MatrixSize (PtMatrix pmat, unsigned int *pnl, unsigned int *pnc)
   /* verifica se a matriz existe */
   if (pmat == NULL)
   {
-    Error = NO_MATRIX;
+    Error = NO_MATRIX; 
     *pnl = *pnc = 0;
   }
   else
@@ -190,104 +200,97 @@ int MatrixObserveElement (PtMatrix pmat, unsigned int pl, unsigned int pc)
 
 PtMatrix MatrixTranspose (PtMatrix pmat)
 {
-  PtMatrix Matrix;
-  unsigned int l, i;
+  PtMatrix Transpose;
+  int I, J;
 
-  /* verifica se a matrix existe */
-  if (pmat == NULL) {
+  if(pmat == NULL) {
     Error = NO_MATRIX;
     return NULL;
   }
 
-  /* criação do matrix copia nulo */
-  if ((Matrix = MatrixCreate(pmat->NC, pmat->NL)) == NULL)
+  if((Transpose = MatrixCreate(pmat->NC, pmat->NL)) == NULL) {
     return NULL;
+  }
 
-  for(l=0; l<Matrix->NC; l++){
-    for (i = 0; i < Matrix->NL; ++i){
-      Matrix->Matrix[i][l] = pmat->Matrix[l][i];
+  for(I = 0; I < pmat->NL; ++I) {
+    for(J = 0; J < pmat->NC; ++J) {
+      Transpose->Matrix[J][I] = pmat->Matrix[I][J];
     }
   }
 
-  return Matrix;
+  Error = OK;
+  return Transpose;
 }
 
 PtMatrix MatrixAddition (PtMatrix pmat1, PtMatrix pmat2)
 {
+  PtMatrix Add;
+  int I, J;
 
-  if(!EqualDimensionMatrixes(pmat1,pmat2)){
-    Error = BAD_SIZE;
+  if(!EqualDimensionMatrixes(pmat1, pmat2)) {
     return NULL;
   }
 
-  PtMatrix Result;
-  unsigned int l, c;
-
-  /* criação do matrix copia nulo */
-  if ((Result = MatrixCreate(pmat1->NC, pmat1->NL)) == NULL)
+  if((Add = MatrixCreate(pmat1->NL, pmat1->NC)) == NULL) {
     return NULL;
+  }
 
-  for(l=0; l<Result->NL; l++){
-    for(c=0; c<Result->NC; c++){
-      Result->Matrix[l][c] = MatrixObserveElement(pmat1, l, c) + MatrixObserveElement(pmat1, c, l);
+  for(I = 0; I < pmat1->NL; ++I) {
+    for(J = 0; J < pmat1->NC; ++J) {
+      Add->Matrix[I][J] = pmat1->Matrix[I][J] + pmat2->Matrix[I][J];
     }
   }
 
   Error = OK;
-  return Result;
+  return Add;
 }
 
 PtMatrix MatrixSubtraction (PtMatrix pmat1, PtMatrix pmat2)
 {
-  if(!EqualDimensionMatrixes(pmat1,pmat2)){
-    Error = BAD_SIZE;
+  PtMatrix Sub;
+  int I, J;
+
+  if(!EqualDimensionMatrixes(pmat1, pmat2)) {
     return NULL;
   }
 
-  PtMatrix Result;
-  unsigned int l, c;
-
-  /* criação do matrix copia nulo */
-  if ((Result = MatrixCreate(pmat1->NC, pmat1->NL)) == NULL)
+  if((Sub = MatrixCreate(pmat1->NL, pmat1->NC)) == NULL) {
     return NULL;
+  }
 
-  for(l=0; l<Result->NL; l++){
-    for(c=0; c<Result->NC; c++){
-      Result->Matrix[l][c] = MatrixObserveElement(pmat1, l, c) - MatrixObserveElement(pmat1, c, l);
+  for(I = 0; I < pmat1->NL; ++I) {
+    for(J = 0; J < pmat1->NC; ++J) {
+      Sub->Matrix[I][J] = pmat1->Matrix[I][J] - pmat2->Matrix[I][J];
     }
   }
 
   Error = OK;
-  return Result;
+  return Sub;
 }
 
 PtMatrix MatrixMultiplication (PtMatrix pmat1, PtMatrix pmat2)
 {
-  PtMatrix multiplication_result;
-  int i, j, k;
+  PtMatrix Mul;
+  int I, J, K;
 
-  /* Vê se as matrizes existem */
-  if ((pmat1 == NULL) || (pmat2 == NULL)) { Error = NO_MATRIX; return 0; }
-
-  /* Ver se pmat1->NC == pmat2->NL */
-  if(pmat1->NC==pmat2->NL){
-    Error = BAD_SIZE;
-    return 0;
+  if(!ChainedMatrixes(pmat1, pmat2)) {
+    return NULL;
   }
 
-  if ((multiplication_result = MatrixCreate (pmat1->NL, pmat1->NC)) == NULL)
+  if((Mul = MatrixCreate(pmat1->NL, pmat2->NC)) == NULL) {
     return NULL;
+  }
 
-  for(k=0; k < pmat1->NC; k++){
-    for(i=0; i < pmat1->NL; i++){
-      for(j=0; j < pmat2->NC; j++){
-        multiplication_result->Matrix[i][j] = pmat1->Matrix[i][k] * pmat2->Matrix[k][j];
+  for(I = 0; I < pmat1->NL; ++I) {
+    for(J = 0; J < pmat2->NC; ++J) {
+      for(K = 0; K < pmat1->NC; ++K) {
+        Mul->Matrix[I][J] += pmat1->Matrix[I][K] * pmat2->Matrix[K][J];
       }
     }
   }
 
   Error = OK;
-  return multiplication_result;
+  return Mul;
 }
 
 int MatrixEquals (PtMatrix pmat1, PtMatrix pmat2)
