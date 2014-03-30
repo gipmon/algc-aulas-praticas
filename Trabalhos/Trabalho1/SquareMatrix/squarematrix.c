@@ -274,9 +274,15 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 double SMatrixDeterminant (PtSMatrix pmatrix)
 {
-  /* insira o seu código */
-  /* faça uma implementação utilizando a função interna Determinant */
-  return 0.0;
+  double result;
+
+  if (pmatrix == NULL){
+    Error = NO_MATRIX;
+    return 0.0;
+  }
+
+  result = Determinant(pmatrix->Matrix, pmatrix->Size, )
+  
 }
 
 int SMatrixEquals (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
