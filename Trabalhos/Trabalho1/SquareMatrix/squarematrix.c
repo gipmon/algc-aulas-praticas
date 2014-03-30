@@ -66,7 +66,7 @@ char *SMatrixErrorMessage (void)
 
 PtSMatrix SMatrixCreate (unsigned int psize)
 {
-  PtMatrix Matrix;
+  PtSMatrix Matrix;
   int i, j;
   if(psize < 1) {
     Error = BAD_SIZE;
@@ -107,7 +107,7 @@ PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 
 PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
 {
-  PtMatrix Matrix;
+  PtSMatrix Matrix;
   unsigned int i, j;
 
   if (pmatrix == NULL) {
@@ -176,8 +176,24 @@ double SMatrixObserveElement (PtSMatrix pmatrix, unsigned int pl, unsigned int p
 
 PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
 {
-  /* insira o seu código */
-  return NULL;
+  PtSMatrix Matrix;
+  unsigned int l, i;
+
+  if (pmatrix == NULL) {
+    Error = NO_MATRIX;
+    return NULL;
+  }
+
+  if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
+    return NULL;
+
+  for(l=0; l<Matrix->Size; l++){
+    for (i = 0; i < Matrix->Size; i++){
+      Matrix->Matrix[i][l] = pmatrix->Matrix[l][i];
+    }
+  }
+
+  return Matrix;
 }
 
 PtSMatrix SMatrixAdd (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
