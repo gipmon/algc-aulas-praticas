@@ -66,9 +66,33 @@ char *SMatrixErrorMessage (void)
 
 PtSMatrix SMatrixCreate (unsigned int psize)
 {
-  /* construtor criador */
+  PtMatrix Matrix;
+  int i;
+  if(psize < 1) {
+    Error = BAD_SIZE;
+    return NULL;
+  }
 
-  /* insira o seu código */
+  if((Matrix = (PtMatrix) malloc(sizeof(struct matrix))) == NULL){
+    Error = NO_MEM;
+    return NULL;
+  }
+
+  for(i=0; i < psize; i++){
+    if((Matrix->Matrix[i] = (int *) calloc (psize, sizeof(int)))==NULL){
+      for (i = 0; i < l; ++i){
+        free(Matrix->Matrix[i]);
+      }
+      free(Matrix->Matrix);
+      free(Matrix);
+      Error=NO_MEM;
+      return NULL;
+    }
+  }
+  Matrix->Size = psize;
+
+  Error = OK;
+
   return NULL;
 }
 
