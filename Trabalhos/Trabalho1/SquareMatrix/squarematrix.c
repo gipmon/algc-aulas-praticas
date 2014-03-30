@@ -106,8 +106,25 @@ PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 
 PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
 {
-  /* insira o seu código */
-  return NULL;
+  PtMatrix Matrix;
+  unsigned int l, i;
+
+  if (pmatrix == NULL) {
+    Error = NO_MATRIX;
+    return NULL;
+  }
+
+  if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
+    return NULL;
+
+  for(l=0; l<Matrix->Size; l++){
+    for (i = 0; i < Matrix->Size; ++i){
+      Matrix->Matrix[l][i] = pmatrix->Matrix[l][i];
+    }
+  }
+
+  Error = OK;
+  return Matrix;
 }
 
 void SMatrixDestroy (PtSMatrix *pmatrix)
