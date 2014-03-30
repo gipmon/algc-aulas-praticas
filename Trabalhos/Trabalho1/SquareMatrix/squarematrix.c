@@ -73,14 +73,14 @@ PtSMatrix SMatrixCreate (unsigned int psize)
     return NULL;
   }
 
-  if((Matrix = (PtMatrix) malloc(sizeof(struct matrix))) == NULL){
+  if((Matrix = (PtSMatrix) malloc(sizeof(struct matrix))) == NULL){
     Error = NO_MEM;
     return NULL;
   }
 
-  for(i=0; i <= psize; i++){
+  for(i=0; i < psize; i++){
     if((Matrix->Matrix[i] = (int *) calloc (psize, sizeof(int)))==NULL){
-      for (j = 0; j <= i; j++){
+      for (j = 0; j < i; j++){
         free(Matrix->Matrix[j]);
       }
       free(Matrix->Matrix);
@@ -118,7 +118,7 @@ PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
   if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
     return NULL;
 
-  for(i=0; i <= Matrix->Size; i++){
+  for(i=0; i < Matrix->Size; i++){
     for (j = 0; j < Matrix->Size; j++){
       Matrix->Matrix[i][j] = pmatrix->Matrix[i][j];
     }
@@ -137,7 +137,7 @@ void SMatrixDestroy (PtSMatrix *pmatrix)
 
   unsigned int i;
 
-  for (i = 0; i <= (*pmatrix)->Size; i++){
+  for (i = 0; i < (*pmatrix)->Size; i++){
     free((*pmatrix)->Matrix[i]);
   }
 
@@ -177,7 +177,7 @@ double SMatrixObserveElement (PtSMatrix pmatrix, unsigned int pl, unsigned int p
 PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
 {
   PtSMatrix Matrix;
-  unsigned int l, i;
+  unsigned int i, j;
 
   if (pmatrix == NULL) {
     Error = NO_MATRIX;
@@ -187,9 +187,9 @@ PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
   if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
     return NULL;
 
-  for(l=0; l<Matrix->Size; l++){
-    for (i = 0; i < Matrix->Size; i++){
-      Matrix->Matrix[i][l] = pmatrix->Matrix[l][i];
+  for(i=0; i< Matrix->Size; i++){
+    for (j = 0; j < Matrix->Size; j++){
+      Matrix->Matrix[i][j] = pmatrix->Matrix[i][j];
     }
   }
 
@@ -198,8 +198,25 @@ PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
 
 PtSMatrix SMatrixAdd (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 {
-  /* insira o seu código */
-  return NULL;
+  if(!EqualDimensionMatrixes(pmatrix1, pmatrix2)){
+    Error = BAD_SIZE;
+    return NULL;
+  }
+
+  PtSMatrix Result;
+  unsigned int i, j;
+
+  if ((Result = MatrixCreate(pmatrix1->Size, pmatrix1->Size)) == NULL)
+    return NULL;
+
+  for(i=0; i<Result->Size; i++){
+    for(j=0; j<Result->Size; j++){
+      Result->Matrix[i][j] = MatrixObserveElement(pmatrix1, i, j) + MatrixObserveElement(pmatrix2, i, j);
+    }
+  }
+
+  Error = OK;
+  return Result;
 }
 
 PtSMatrix SMatrixSub (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
