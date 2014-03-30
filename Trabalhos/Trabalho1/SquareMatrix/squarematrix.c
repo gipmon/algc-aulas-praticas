@@ -67,7 +67,7 @@ char *SMatrixErrorMessage (void)
 PtSMatrix SMatrixCreate (unsigned int psize)
 {
   PtMatrix Matrix;
-  int i;
+  int i, j;
   if(psize < 1) {
     Error = BAD_SIZE;
     return NULL;
@@ -78,10 +78,10 @@ PtSMatrix SMatrixCreate (unsigned int psize)
     return NULL;
   }
 
-  for(i=0; i < psize; i++){
+  for(i=0; i <= psize; i++){
     if((Matrix->Matrix[i] = (int *) calloc (psize, sizeof(int)))==NULL){
-      for (i = 0; i < l; ++i){
-        free(Matrix->Matrix[i]);
+      for (j = 0; j <= i; j++){
+        free(Matrix->Matrix[j]);
       }
       free(Matrix->Matrix);
       free(Matrix);
@@ -89,6 +89,7 @@ PtSMatrix SMatrixCreate (unsigned int psize)
       return NULL;
     }
   }
+
   Matrix->Size = psize;
 
   Error = OK;
@@ -107,7 +108,7 @@ PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
 {
   PtMatrix Matrix;
-  unsigned int l, i;
+  unsigned int i, j;
 
   if (pmatrix == NULL) {
     Error = NO_MATRIX;
@@ -117,9 +118,9 @@ PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
   if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
     return NULL;
 
-  for(l=0; l<Matrix->Size; l++){
-    for (i = 0; i < Matrix->Size; ++i){
-      Matrix->Matrix[l][i] = pmatrix->Matrix[l][i];
+  for(i=0; i <= Matrix->Size; i++){
+    for (j = 0; j < Matrix->Size; j++){
+      Matrix->Matrix[i][j] = pmatrix->Matrix[i][j];
     }
   }
 
@@ -129,7 +130,22 @@ PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
 
 void SMatrixDestroy (PtSMatrix *pmatrix)
 {
-  /* insira o seu código */
+  if(*pmatrix==NULL){
+    Error = NO_MATRIX;
+    return;
+  }
+
+  unsigned int i;
+
+  for (i = 0; i <= (*pmatrix)->Size; i++){
+    free((*pmatrix)->Matrix[i]);
+  }
+
+  free((*pmatrix)->Matrix);
+  free(*pmatrix);
+  *pmatrix = NULL;
+
+  Error = OK;
 }
 
 unsigned int SMatrixSize (PtSMatrix pmatrix)
