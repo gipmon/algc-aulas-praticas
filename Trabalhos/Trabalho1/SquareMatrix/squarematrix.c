@@ -99,9 +99,14 @@ PtSMatrix SMatrixCreate (unsigned int psize)
 
 PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 {
-  /* construtor inicializador */
+  PtSMatrix Matrix = SMatrixCreate(psize);
 
-  /* insira o seu código */
+  for(i=0; i < Matrix->Size; i++){
+    for (j = 0; j < Matrix->Size; j++){
+      Matrix->Matrix[i][j] = array[i][j];
+    }
+  }
+
   return NULL;
 }
 
