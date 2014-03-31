@@ -99,11 +99,15 @@ PtSMatrix SMatrixCreate (unsigned int psize)
 
 PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 {
-  PtSMatrix Matrix = SMatrixCreate(psize);
+  PtSMatrix Matrix;
+  if(Matrix = SMatrixCreate(psize) == NULL{
+    Error = NO_MEM;
+    return NULL;
+  }
 
   for(i=0; i < Matrix->Size; i++){
     for (j = 0; j < Matrix->Size; j++){
-      Matrix->Matrix[i][j] = array[i][j];
+      Matrix->Matrix[i][j] = array[i*psize+j];
     }
   }
 
@@ -353,7 +357,7 @@ PtSMatrix SMatrixCreateFile (char *pfname)
 
   /* leitura da dimensão da matriz do ficheiro e criação da matriz */
   fscanf (PtF, "%u%u", &NL, &NC);
-  
+
   if (NL != NC) { fclose (PtF); return NULL; }
   else Size = NL;
 
