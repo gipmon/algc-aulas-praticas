@@ -77,10 +77,14 @@ PtSMatrix SMatrixCreate (unsigned int psize)
     Error = NO_MEM;
     return NULL;
   }
-
+  if((Matrix->Matrix = (double**) calloc(psize, sizeof(double*)))==NULL){
+    free(Matrix);
+    Error=NO_MEM;
+    return NULL;
+  }
   for(i=0; i < psize; i++){
-    if((Matrix->Matrix[i] = (int *) calloc (psize, sizeof(int)))==NULL){
-      for (j = 0; j < i; j++){
+    if((Matrix->Matrix[i] = (double *) calloc (psize, sizeof(double)))==NULL){
+      for (j = 0; j <= i; j++){
         free(Matrix->Matrix[j]);
       }
       free(Matrix->Matrix);
@@ -94,7 +98,7 @@ PtSMatrix SMatrixCreate (unsigned int psize)
 
   Error = OK;
 
-  return NULL;
+  return Matrix;
 }
 
 PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
@@ -126,7 +130,7 @@ PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
     return NULL;
   }
 
-  if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
+  if ((Matrix = SMatrixCreate(pmatrix->Size)) == NULL)
     return NULL;
 
   for(i=0; i < Matrix->Size; i++){
@@ -195,7 +199,7 @@ PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
     return NULL;
   }
 
-  if ((Matrix = MatrixCreate(pmatrix->Size)) == NULL)
+  if ((Matrix = SMatrixCreate(pmatrix->Size)) == NULL)
     return NULL;
 
   for(i=0; i< Matrix->Size; i++){
@@ -217,12 +221,12 @@ PtSMatrix SMatrixAdd (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
   PtSMatrix Result;
   unsigned int i, j;
 
-  if ((Result = MatrixCreate(pmatrix1->Size, pmatrix1->Size)) == NULL)
+  if ((Result = SMatrixCreate(pmatrix1->Size)) == NULL)
     return NULL;
 
   for(i=0; i<Result->Size; i++){
     for(j=0; j<Result->Size; j++){
-      Result->Matrix[i][j] = MatrixObserveElement(pmatrix1, i, j) + MatrixObserveElement(pmatrix2, i, j);
+      Result->Matrix[i][j] = SMatrixObserveElement(pmatrix1, i, j) + SMatrixObserveElement(pmatrix2, i, j);
     }
   }
 
@@ -240,12 +244,12 @@ PtSMatrix SMatrixSub (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
   PtSMatrix Result;
   unsigned int i, j;
 
-  if ((Result = MatrixCreate(pmatrix1->Size, pmatrix1->Size)) == NULL)
+  if ((Result = SMatrixCreate(pmatrix1->Size)) == NULL)
     return NULL;
 
   for(i=0; i<Result->Size; i++){
     for(j=0; j<Result->Size; j++){
-      Result->Matrix[i][j] = MatrixObserveElement(pmatrix1, i, j) - MatrixObserveElement(pmatrix2, i, j);
+      Result->Matrix[i][j] = SMatrixObserveElement(pmatrix1, i, j) - SMatrixObserveElement(pmatrix2, i, j);
     }
   }
 
@@ -268,7 +272,7 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
     return NULL;
   }
 
-  if ((mul = MatrixCreate (pmatrix1->Size, pmatrix1->Size)) == NULL)
+  if ((mul = SMatrixCreate(pmatrix1->Size)) == NULL)
     return NULL;
 
   for(k=0; k < pmatrix1->Size; k++){
@@ -285,14 +289,20 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 double SMatrixDeterminant (PtSMatrix pmatrix)
 {
-
-  if (pmatrix == NULL){
+  if(pmatrix == NULL){
     Error = NO_MATRIX;
     return 0.0;
   }
+  int i, j;
+  double array[pmatrix->Size*pmatrix->Size];
 
-  return Determinant(pmatrix->Matrix, pmatrix->Size, pmatrix->Size);
-  
+  for(i=0; i < pmatrix->Size; i++){
+    for (j = 0; j < pmatrix->Size; j++){
+      array[i*pmatrix->Size+j] = pmatrix->Matrix[i][j];
+    }
+  }
+
+  return Determinant(array, pmatrix->Size, pmatrix->Size);
 }
 
 int SMatrixEquals (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
