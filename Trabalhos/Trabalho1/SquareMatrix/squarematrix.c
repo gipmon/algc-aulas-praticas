@@ -204,7 +204,7 @@ PtSMatrix SMatrixTranspose (PtSMatrix pmatrix)
 
   for(i=0; i< Matrix->Size; i++){
     for (j = 0; j < Matrix->Size; j++){
-      Matrix->Matrix[i][j] = pmatrix->Matrix[i][j];
+      Matrix->Matrix[i][j] = pmatrix->Matrix[j][i];
     }
   }
 
