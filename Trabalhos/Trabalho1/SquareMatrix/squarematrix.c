@@ -73,7 +73,7 @@ PtSMatrix SMatrixCreate (unsigned int psize)
     return NULL;
   }
 
-  if((Matrix = (PtSMatrix) malloc(sizeof(struct matrix))) == NULL){
+  if((Matrix = (PtSMatrix) malloc(sizeof(struct squarematrix))) == NULL){
     Error = NO_MEM;
     return NULL;
   }
@@ -100,7 +100,9 @@ PtSMatrix SMatrixCreate (unsigned int psize)
 PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
 {
   PtSMatrix Matrix;
-  if(Matrix = SMatrixCreate(psize) == NULL{
+  unsigned int i, j;
+
+  if((Matrix = SMatrixCreate(psize)) == NULL){
     Error = NO_MEM;
     return NULL;
   }
@@ -299,7 +301,7 @@ double SMatrixDeterminant (PtSMatrix pmatrix)
     }
   }
 
-  return result
+  return result;
   
 }
 
