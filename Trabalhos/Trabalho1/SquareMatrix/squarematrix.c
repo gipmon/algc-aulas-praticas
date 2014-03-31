@@ -1,32 +1,32 @@
 /*******************************************************************************
 
- Ficheiro de implementação do Tipo de Dados Abstrato MATRIZ QUADRADA (squarematrix.c).
- A estrutura de dados de suporte da matriz é uma estrutura, constituída pelo
- campo Size para armazenar o número de linhas e de colunas da matriz e o campo de
+ Ficheiro de implementaÃ§Ã£o do Tipo de Dados Abstrato MATRIZ QUADRADA (squarematrix.c).
+ A estrutura de dados de suporte da matriz Ã© uma estrutura, constituÃ­da pelo
+ campo Size para armazenar o nÃºmero de linhas e de colunas da matriz e o campo de
  tipo ponteiro para ponteiro Matrix para armazenar os seus elementos reais, que 
- vão ser armazenados numa sequência bidimensional atribuída dinamicamente.
+ vÃ£o ser armazenados numa sequÃªncia bidimensional atribuÃ­da dinamicamente.
  
- Autor : António Manuel Adrego da Rocha    Data : Março de 2014
+ Autor : AntÃ³nio Manuel Adrego da Rocha    Data : MarÃ§o de 2014
 
 *******************************************************************************/
 
-/********** Implementação da Matriz Quadrada - squarematrix.c **********/
+/********** ImplementaÃ§Ã£o da Matriz Quadrada - squarematrix.c **********/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "squarematrix.h"	/* Ficheiro de interface da Matriz Quadrada */
 
-/********** Definição da Estrutura de Dados da Matriz Quadrada *********/
+/********** DefiniÃ§Ã£o da Estrutura de Dados da Matriz Quadrada *********/
 
 struct squarematrix
 {
 	unsigned int Size;	/* capacidade de armazenamento da matriz */
-	double **Matrix;	/* sequência bidimensional que representa a matriz */
+	double **Matrix;	/* sequÃªncia bidimensional que representa a matriz */
 };
 
 /******************** Controlo Centralizado de Erro ********************/
 
-static unsigned int Error = OK;	/* inicialização do erro */
+static unsigned int Error = OK;	/* inicializaÃ§Ã£o do erro */
 
 static char *ErrorMessages[] = { "sem erro", "matriz(es) inexistente(s)",
                                  "memoria esgotada", "ficheiro inexistente", 
@@ -37,16 +37,16 @@ static char *ErrorMessages[] = { "sem erro", "matriz(es) inexistente(s)",
 
 static char *AbnormalErrorMessage = "erro desconhecido";
 
-/*********** Número de mensagens de erro previstas no módulo ***********/
+/*********** NÃºmero de mensagens de erro previstas no mÃ³dulo ***********/
 
 #define N (sizeof (ErrorMessages) / sizeof (char *))
 
-/***************** Protótipos dos Subprogramas Internos ****************/
+/***************** ProtÃ³tipos dos Subprogramas Internos ****************/
 
 static int EqualDimensionMatrixes (PtSMatrix, PtSMatrix);
 static double Determinant (double *, unsigned int, unsigned int);
 
-/********************** Definição dos Subprogramas *********************/
+/********************** DefiniÃ§Ã£o dos Subprogramas *********************/
 
 void SMatrixClearError (void)
 {
@@ -61,7 +61,7 @@ int SMatrixError (void)
 char *SMatrixErrorMessage (void)
 {
   if (Error < N) return ErrorMessages[Error];
-  else return AbnormalErrorMessage;  /* não há mensagem de erro */
+  else return AbnormalErrorMessage;  /* nÃ£o hÃ¡ mensagem de erro */
 }
 
 PtSMatrix SMatrixCreate (unsigned int psize)
@@ -279,6 +279,7 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 double SMatrixDeterminant (PtSMatrix pmatrix)
 {
+  int i, j; 
   double result;
 
   if (pmatrix == NULL){
@@ -286,7 +287,15 @@ double SMatrixDeterminant (PtSMatrix pmatrix)
     return 0.0;
   }
 
-  result = Determinant(pmatrix->Matrix, pmatrix->Size, )
+  for(i = 0; i<pmatrix->Size; i++){
+    for(j = 0; j<pmatrix->Size; j++){
+      if(pmatrix->Matrix[i][j] != 0){
+        result = Determinant(pmatrix->Matrix, pmatrix->Size, j);
+      }
+    }
+  }
+
+  return result
   
 }
 
@@ -299,15 +308,15 @@ int SMatrixEquals (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
     Error = OK;
 
-    /* comparação da dimensão das matrizes */
+    /* comparaÃ§Ã£o da dimensÃ£o das matrizes */
 	if (pmatrix1->Size != pmatrix2->Size) return 0;
 
-    /* comparação das componentes das matrizes */
+    /* comparaÃ§Ã£o das componentes das matrizes */
 	for (L = 0; L < pmatrix1->Size; L++)
 	  for (C = 0; C < pmatrix1->Size; C++)
         if (pmatrix1->Matrix[L][C] != pmatrix2->Matrix[L][C])	return 0;
 
-    return 1;  /* as matrizes são iguais */
+    return 1;  /* as matrizes sÃ£o iguais */
 }
 
 void SMatrixStoreFile (PtSMatrix pmatrix, char *pfname)
@@ -320,7 +329,7 @@ void SMatrixStoreFile (PtSMatrix pmatrix, char *pfname)
   /* abertura com validacao do ficheiro para escrita */
   if ((PtF = fopen (pfname, "w")) == NULL) { Error = NO_FILE; return ; }
 
-  /* escrita da dimensão da matriz no ficheiro */
+  /* escrita da dimensÃ£o da matriz no ficheiro */
   fprintf (PtF, "%u\t%u\n", pmatrix->Size, pmatrix->Size);
 
   /* escrita das componentes da matriz no ficheiro */
@@ -342,7 +351,7 @@ PtSMatrix SMatrixCreateFile (char *pfname)
   /* abertura com validacao do ficheiro para leitura */
   if ( (PtF = fopen (pfname, "r")) == NULL) { Error = NO_FILE; return NULL; }
 
-  /* leitura da dimensão da matriz do ficheiro e criação da matriz */
+  /* leitura da dimensÃ£o da matriz do ficheiro e criaÃ§Ã£o da matriz */
   fscanf (PtF, "%u%u", &NL, &NC);
   
   if (NL != NC) { fclose (PtF); return NULL; }
@@ -363,68 +372,68 @@ PtSMatrix SMatrixCreateFile (char *pfname)
 
 PtSMatrix SMatrixCreateIdentity (unsigned int psize)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 PtSMatrix SMatrixMultByScalar (PtSMatrix pmatrix, double pvalue)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
   return NULL;
 }
 
 int SMatrixIsSymetric (PtSMatrix pmatrix)
 {
-  /* insira o seu código */
-  /* faça uma implementação eficiente */
+  /* insira o seu cÃ³digo */
+  /* faÃ§a uma implementaÃ§Ã£o eficiente */
   return 0;
 }
 
 void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
 {
-  /* insira o seu código */
-  /* faça uma implementação eficiente */
+  /* insira o seu cÃ³digo */
+  /* faÃ§a uma implementaÃ§Ã£o eficiente */
 }
 
 void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
 {
-  /* insira o seu código */
+  /* insira o seu cÃ³digo */
 }
 
 /*******************************************************************************
- Função auxiliar que verifica se as duas matrizes podem ser operadas ou
- comparadas, ou seja, se existem e se têm a mesma dimensão. Devolve 1 em caso
- afirmativo e 0 no caso contrário. Valores de erro: NO_MATRIX ou DIF_SIZE.
+ FunÃ§Ã£o auxiliar que verifica se as duas matrizes podem ser operadas ou
+ comparadas, ou seja, se existem e se tÃªm a mesma dimensÃ£o. Devolve 1 em caso
+ afirmativo e 0 no caso contrÃ¡rio. Valores de erro: NO_MATRIX ou DIF_SIZE.
 *******************************************************************************/
 static int EqualDimensionMatrixes (PtSMatrix pmat1, PtSMatrix pmat2)
 {
   /* verifica se as duas matrizes existem */
   if ((pmat1 == NULL) || (pmat2 == NULL)) { Error = NO_MATRIX; return 0; }
 
-  /* verifica se as duas matrizes têm a mesma dimensão */
+  /* verifica se as duas matrizes tÃªm a mesma dimensÃ£o */
   if (pmat1->Size != pmat2->Size) { Error = DIF_SIZE; return 0; }
 
-  /* as duas matrizes existem e têm a mesma dimensão */
+  /* as duas matrizes existem e tÃªm a mesma dimensÃ£o */
   return 1;
 }
 
 /*******************************************************************************
- Função auxiliar que calcula efectivamente o determinante de uma matriz quadrada
- usando o algoritmo de eliminação de Gauss.
+ FunÃ§Ã£o auxiliar que calcula efectivamente o determinante de uma matriz quadrada
+ usando o algoritmo de eliminaÃ§Ã£o de Gauss.
 *******************************************************************************/
 static double Determinant (double *pmatrix, unsigned int psize, unsigned int pn)
 {
 	unsigned int AuxCol, NC, NL, LC = pn-1; double Elem;
 
-	if (pn == 1) return *pmatrix;	/* condição de paragem */
+	if (pn == 1) return *pmatrix;	/* condiÃ§Ã£o de paragem */
 	else
 	{
-		AuxCol = LC;	/* procurar coluna com último elemento ? 0 */
+		AuxCol = LC;	/* procurar coluna com Ãºltimo elemento ? 0 */
 		while (AuxCol >= 0 && *(pmatrix+LC*psize+AuxCol) == 0) AuxCol--;
 
 		if (AuxCol >= 0)	/* se existir tal coluna */
 		{
-			if (AuxCol != LC)	/* se não for a última coluna */
+			if (AuxCol != LC)	/* se nÃ£o for a Ãºltima coluna */
 				for (NL = 0; NL < pn; NL++)	/* trocar as colunas */
 				{
 					Elem = *(pmatrix+NL*psize+LC);
@@ -432,16 +441,16 @@ static double Determinant (double *pmatrix, unsigned int psize, unsigned int pn)
 					*(pmatrix+NL*psize+AuxCol) = -Elem;
 				}
 
-			/* dividir a última coluna pelo último elemento */
+			/* dividir a Ãºltima coluna pelo Ãºltimo elemento */
 			for (NL = 0; NL < LC; NL++) *(pmatrix+NL*psize+LC) = *(pmatrix+NL*psize+LC) / *(pmatrix+LC*psize+LC);
 
-			/* subtrair todas as colunas menos a última pela última coluna */
-			/* multiplicada pelo último elemento da coluna a processar */
+			/* subtrair todas as colunas menos a Ãºltima pela Ãºltima coluna */
+			/* multiplicada pelo Ãºltimo elemento da coluna a processar */
 			for (NC = 0; NC < LC; NC++)
 				for (NL = 0; NL < LC; NL++)
 					*(pmatrix+NL*psize+NC) = *(pmatrix+NL*psize+NC) - (*(pmatrix+NL*psize+LC) * *(pmatrix+LC*psize+NC));
 
-			/* invocação recursiva para a matriz de dimensão N-1 */
+			/* invocaÃ§Ã£o recursiva para a matriz de dimensÃ£o N-1 */
 			return *(pmatrix+LC*psize+LC) * Determinant (pmatrix, psize, pn-1);
 		}
 		else return 0.0;
