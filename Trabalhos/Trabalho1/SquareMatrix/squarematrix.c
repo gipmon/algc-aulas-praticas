@@ -285,23 +285,13 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
 
 double SMatrixDeterminant (PtSMatrix pmatrix)
 {
-  int i, j; 
-  double result;
 
   if (pmatrix == NULL){
     Error = NO_MATRIX;
     return 0.0;
   }
 
-  for(i = 0; i<pmatrix->Size; i++){
-    for(j = 0; j<pmatrix->Size; j++){
-      if(pmatrix->Matrix[i][j] != 0){
-        result = Determinant(pmatrix->Matrix, pmatrix->Size, j);
-      }
-    }
-  }
-
-  return result;
+  return Determinant(pmatrix->Matrix, pmatrix->Size, pmatrix->Size);
   
 }
 
