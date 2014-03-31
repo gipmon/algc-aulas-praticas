@@ -397,13 +397,40 @@ int SMatrixIsSymetric (PtSMatrix pmatrix)
 
 void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
 {
-  /* insira o seu código */
-  /* faça uma implementação eficiente */
+  if(pmatrix == NULL){
+    Error = NO_MATRIX;
+    return NULL;
+  }
+  double tmp[pmatrix->Size];
+  int i;
+
+  for(i = 0; i < pmatrix->Size; i++){
+    tmp[i] = pmatrix->Matrix[pl][i];
+    pmatrix->Matrix[pl][i] = pmatrix->Matrix[pk][i];
+    pmatrix->Matrix[pk][i] = tmp[i];
+  }
+
+  Error = OK;
+  return;
 }
 
 void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
 {
-  /* insira o seu código */
+  if(pmatrix == NULL){
+    Error = NO_MATRIX;
+    return NULL;
+  }
+  double tmp[pmatrix->Size];
+  int i;
+
+  for(i = 0; i < pmatrix->Size; i++){
+    tmp[i] = pmatrix->Matrix[pl][i];
+    pmatrix->Matrix[i][pl] = pmatrix->Matrix[i][pk];
+    pmatrix->Matrix[i][pk] = tmp[i];
+  }
+
+  Error = OK;
+  return;
 }
 
 /*******************************************************************************
