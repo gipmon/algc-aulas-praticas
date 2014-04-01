@@ -1,10 +1,4 @@
-//
-//  main.c
-//  Potencias
-//
-//  Created by Rodrigo Cunha on 13/02/14.
-//  Copyright (c) 2014 Rodrigo Cunha. All rights reserved.
-//
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,17 +29,14 @@ int main(void){
 }
 
 unsigned int potencias(unsigned int pn, unsigned int n){
-    unsigned int i,res= 1, som=0;
-    if(pn == 0){
-        return 0;
+    if(n == 0){
+       return 1; 
+    }else if(n == 1){
+        return pn;  
+    }else{
+       count++;
+       return pn * potencias(pn, n-1);
     }
-    
-    for(i = 1; i<=n; i++){
-        res *= pn;
-        som += res;
-        count+=2;
-    }
-    
-    return som;
+   
 }
 

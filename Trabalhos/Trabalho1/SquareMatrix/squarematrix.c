@@ -384,22 +384,56 @@ PtSMatrix SMatrixCreateIdentity (unsigned int psize)
 
 PtSMatrix SMatrixMultByScalar (PtSMatrix pmatrix, double pvalue)
 {
-  /* insira o seu código */
-  return NULL;
+  PtSMatrix scalar;
+  int i, j;
+
+  if (pmatrix == NULL){
+    Error = NO_MATRIX;
+    return 0;
+  }
+
+  if ((scalar = SMatrixCreate(pmatrix->Size)) == NULL)
+    return NULL;
+
+    for(i=0; i < pmatrix->Size; i++){
+      for(j=0; j < pmatrix->Size; j++){
+        scalar->Matrix[i][j] = pvalue * pmatrix->Matrix[i][j];
+      }
+    }
+  
+  Error = OK;
+  return scalar;
 }
 
 int SMatrixIsSymetric (PtSMatrix pmatrix)
 {
-  /* insira o seu código */
-  /* faça uma implementação eficiente */
-  return 0;
+  PtSMatrix transpose;
+
+  if(pmatrix == NULL){
+    Error = NO_MATRIX;
+    return 0;
+  }
+
+  if ((transpose = SMatrixCreate(pmatrix->Size)) == NULL){
+    return 0;
+  }
+
+  transpose = SMatrixTranspose(pmatrix);
+
+  if(!SMatrixEquals(pmatrix, transpose)){
+    return 0;
+  }
+
+  Error = OK;
+  return 1;
+  
 }
 
 void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
 {
   if(pmatrix == NULL){
     Error = NO_MATRIX;
-    return NULL;
+    return ;
   }
   double tmp[pmatrix->Size];
   int i;
@@ -418,14 +452,14 @@ void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
 {
   if(pmatrix == NULL){
     Error = NO_MATRIX;
-    return NULL;
+    return;
   }
   double tmp[pmatrix->Size];
   int i;
 
   for(i = 0; i < pmatrix->Size; i++){
-    tmp[i] = pmatrix->Matrix[pl][i];
-    pmatrix->Matrix[i][pl] = pmatrix->Matrix[i][pk];
+    tmp[i] = pmatrix->Matrix[pc][i];
+    pmatrix->Matrix[i][pc] = pmatrix->Matrix[i][pk];
     pmatrix->Matrix[i][pk] = tmp[i];
   }
 

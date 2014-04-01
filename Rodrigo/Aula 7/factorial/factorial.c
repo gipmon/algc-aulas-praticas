@@ -24,19 +24,20 @@ int main(void){
     for(i = 0; i <= n; i++){
         count = 0;
         result = factorial(i);
-        printf("Factorial de %2d = %12u e custou %3d operações", i, result, count);
+        printf("Factorial de %2d = %12u e custou %3d operações\n", i, result, count);
     }
     
     exit(0);
 }
 
 unsigned int factorial(unsigned int pn){
-    unsigned int i, fact = 1;
+    unsigned int fact = 1;
     
     if(pn == 0 || pn == 1){
         return 1;
     }else{
-        fact = factorial(n-1);
+        fact = pn*factorial(pn-1);
+        count++;
     }
     
     return fact;
