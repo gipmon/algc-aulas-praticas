@@ -275,9 +275,9 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
   if ((mul = SMatrixCreate(pmatrix1->Size)) == NULL)
     return NULL;
 
-  for(k=0; k < pmatrix1->Size; k++){
-    for(i=0; i < pmatrix1->Size; i++){
-      for(j=0; j < pmatrix2->Size; j++){
+  for(i=0; i < pmatrix1->Size; i++){
+    for(j=0; j < pmatrix2->Size; j++){
+      for(k=0; k < pmatrix1->Size; k++){
         mul->Matrix[i][j] = pmatrix1->Matrix[i][k] * pmatrix2->Matrix[k][j];
       }
     }
@@ -378,8 +378,21 @@ PtSMatrix SMatrixCreateFile (char *pfname)
 
 PtSMatrix SMatrixCreateIdentity (unsigned int psize)
 {
-  /* insira o seu código */
-  return NULL;
+  PtSMatrix MatrixIdentity;
+  unsigned int i, j;
+
+  if((MatrixIdentity = SMatrixCreate(psize)) == NULL){
+    Error = NO_MEM;
+    return NULL;
+  }
+
+  for(i=0; i<psize; i++){
+    for(j=0; j<psize; j++){
+      MatrixIdentity->Matrix[i][j] = (i==j);
+    }
+  }
+
+  return MatrixIdentity;
 }
 
 PtSMatrix SMatrixMultByScalar (PtSMatrix pmatrix, double pvalue)
@@ -400,7 +413,7 @@ PtSMatrix SMatrixMultByScalar (PtSMatrix pmatrix, double pvalue)
         scalar->Matrix[i][j] = pvalue * pmatrix->Matrix[i][j];
       }
     }
-  
+
   Error = OK;
   return scalar;
 }
@@ -420,13 +433,13 @@ int SMatrixIsSymetric (PtSMatrix pmatrix)
 
   transpose = SMatrixTranspose(pmatrix);
 
+  Error = OK;
+
   if(!SMatrixEquals(pmatrix, transpose)){
     return 0;
+  }else{
+    return 1;
   }
-
-  Error = OK;
-  return 1;
-  
 }
 
 void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
@@ -435,6 +448,11 @@ void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
     Error = NO_MATRIX;
     return ;
   }
+  if((pk < 1 || pk > pmatrix->Size) | (pl < 1 || pl > pmatrix->Size)){
+    Error = BAD_ROW;
+    return ;
+  }
+
   double tmp[pmatrix->Size];
   int i;
 
@@ -454,6 +472,11 @@ void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
     Error = NO_MATRIX;
     return;
   }
+  if((pk < 1 || pk > pmatrix->Size) | (pc < 1 || pc > pmatrix->Size)){
+    Error = BAD_COLUMN;
+    return ;
+  }
+
   double tmp[pmatrix->Size];
   int i;
 
