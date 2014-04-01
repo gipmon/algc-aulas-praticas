@@ -448,7 +448,11 @@ void SMatrixExchangeRow (PtSMatrix pmatrix, unsigned int pk, unsigned int pl)
     Error = NO_MATRIX;
     return ;
   }
-  if((pk < 1 || pk > pmatrix->Size) | (pl < 1 || pl > pmatrix->Size)){
+
+  pk--;
+  pl--;
+
+  if((pk < 0 || pk > pmatrix->Size) || (pl < 0 || pl > pmatrix->Size)){
     Error = BAD_ROW;
     return ;
   }
@@ -472,7 +476,11 @@ void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
     Error = NO_MATRIX;
     return;
   }
-  if((pk < 1 || pk > pmatrix->Size) | (pc < 1 || pc > pmatrix->Size)){
+
+  pk--;
+  pc--;
+
+  if((pk < 0 || pk > pmatrix->Size) || (pc < 0 || pc > pmatrix->Size)){
     Error = BAD_COLUMN;
     return ;
   }
