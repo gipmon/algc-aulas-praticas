@@ -278,7 +278,7 @@ PtSMatrix SMatrixMult (PtSMatrix pmatrix1, PtSMatrix pmatrix2)
   for(i=0; i < pmatrix1->Size; i++){
     for(j=0; j < pmatrix2->Size; j++){
       for(k=0; k < pmatrix1->Size; k++){
-        mul->Matrix[i][j] = pmatrix1->Matrix[i][k] * pmatrix2->Matrix[k][j];
+        mul->Matrix[i][j] += pmatrix1->Matrix[i][k] * pmatrix2->Matrix[k][j];
       }
     }
   }
