@@ -489,7 +489,7 @@ void SMatrixExchangeColumn (PtSMatrix pmatrix, unsigned int pk, unsigned int pc)
   int i;
 
   for(i = 0; i < pmatrix->Size; i++){
-    tmp[i] = pmatrix->Matrix[pc][i];
+    tmp[i] = pmatrix->Matrix[i][pc];
     pmatrix->Matrix[i][pc] = pmatrix->Matrix[i][pk];
     pmatrix->Matrix[i][pk] = tmp[i];
   }
