@@ -117,7 +117,7 @@ PtSMatrix SMatrixCreateArray (unsigned int psize, double *array)
     }
   }
 
-  return NULL;
+  return Matrix;
 }
 
 PtSMatrix SMatrixCopy (PtSMatrix pmatrix)
