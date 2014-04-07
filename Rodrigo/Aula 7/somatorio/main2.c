@@ -5,7 +5,7 @@ unsigned int somatorio(unsigned int, unsigned int); /*alusão à função*/
 int count; /*variável global*/
 
 int main(void){
-    unsigned int i, n, x, result; int test;
+    unsigned int i, n, x, result=0; int test;
     
     do{
         printf("Valor de x?");
