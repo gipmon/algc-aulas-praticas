@@ -48,17 +48,15 @@ int catalanRecursive(unsigned int n){
 
 int catalanDinamic(unsigned int n){
     int i, j;
-    int sum;
-    int *array = ( int*) malloc(n * sizeof( int));
+    int array[n];
 
     array[0] = 1;
     for(i = 1; i <= n; i++){
-        sum = 0;
+        array[i] = 0;
         for(j = 0; j < i; j++){
             nMults++;
-            sum += array[j] * array[i - j - 1];
+            array[i] += array[j] * array[i - j - 1];
         }
-        array[i] = sum;
     }
     return array[n];
 }
