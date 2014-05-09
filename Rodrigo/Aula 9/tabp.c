@@ -17,7 +17,7 @@ int main (void)
 
 	abp1 = ABPCreateFile (filename);
 
-	//if (ABPEmpty (abp1)) printf ("\nArvore vazia!\n");
+	if (ABPEmpty (abp1)) printf ("\nArvore vazia!\n");
 
 	printf ("\nNumero de nos da arvore = %d\n", ABPSize (abp1));
 
@@ -67,7 +67,7 @@ int main (void)
 	printf ("\n");
 	
 	printf ("\nCopia da arvore\n");
-	//abp3 = ABPCopy (abp1);
+	abp3 = ABPCopy (abp1);
 
 	printf ("\nNumero de nos da arvore = %d\n", ABPSize (abp3));
 
