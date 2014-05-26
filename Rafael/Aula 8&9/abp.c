@@ -681,7 +681,6 @@ unsigned int ABPEvenCount (PtABPNode proot){
 /******************************************************************************/
 
 /******************************************************************************/
-
 int ABPOddSum (PtABPNode proot){
 	if(proot == NULL){
 		return 0;
@@ -693,7 +692,51 @@ int ABPOddSum (PtABPNode proot){
 		return ABPOddSum(proot->PtLeft) + ABPOddSum(proot->PtRight);
 	}
 }
+/******************************************************************************/
 
+/******************************************************************************/
+int ABPEvenOrderSum(PtABPNode proot){
+	PtABPNode pnode = proot;
+	PtStack stack;
+
+	int index=1, soma=0;
+	if(proot==NULL){
+		return 0;
+	}
+	if((stack=StackCreate(sizeof(PtABPNode*)))==NULL){
+		return 0;
+	}
+
+	StackPush(stack, &pnode);
+
+	while(!StackEmpty(stack)){
+		if(pnode != NULL){
+			pnode=pnode->PtLeft;
+			StackPush(stack, &pnode);
+		}else{
+			StackPop(stack, &pnode);
+			if(!StackEmpty(stack)){
+				StackPop(stack, &pnode);
+				if(index%2==0){
+					soma += pnode->Elem;
+				}
+				index++;
+				pnode=pnode->PtRight;
+				StackPush(stack, &pnode);
+			}
+		}
+	}
+
+	StackDestroy(&stack);
+	Error=OK;
+	return soma;
+}
+/******************************************************************************/
+
+/******************************************************************************/
+int ABPEquals(PtABPNode proot1, PtABPNode proot2){
+	return proot1->Elem==proot2->Elem;
+}
 /******************************************************************************/
 
 /*******************************************************************************
