@@ -1,0 +1,52 @@
+Inserido o vertice 1 com custo 0 --- Fila -> (1-0)  
+
+Inserido o vertice 2 com custo 100 --- Fila -> (1-0)  (2-100)  
+
+Inserido o vertice 3 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  
+
+Inserido o vertice 4 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  (4-100)  
+
+Inserido o vertice 5 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  (4-100)  (5-100)  
+
+Inserido o vertice 6 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  (4-100)  (5-100)  (6-100)  
+
+Inserido o vertice 7 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  (4-100)  (5-100)  (6-100)  (7-100)  
+
+Inserido o vertice 8 com custo 100 --- Fila -> (1-0)  (2-100)  (3-100)  (4-100)  (5-100)  (6-100)  (7-100)  (8-100)  
+
+Retirado o vertice 1 com custo 0 --- Fila -> (8-100)  (2-100)  (3-100)  (4-100)  (5-100)  (6-100)  (7-100)  
+
+Promovido o vertice 2 com novo custo 10 --- Fila -> (2-10)  (8-100)  (3-100)  (4-100)  (5-100)  (6-100)  (7-100)  
+
+Promovido o vertice 3 com novo custo 5 --- Fila -> (3-5)  (8-100)  (2-10)  (4-100)  (5-100)  (6-100)  (7-100)  
+
+Promovido o vertice 6 com novo custo 5 --- Fila -> (3-5)  (8-100)  (6-5)  (4-100)  (5-100)  (2-10)  (7-100)  
+
+Retirado o vertice 3 com custo 5 --- Fila -> (6-5)  (8-100)  (2-10)  (4-100)  (5-100)  (7-100)  
+
+Promovido o vertice 2 com novo custo 9 --- Fila -> (6-5)  (8-100)  (2-9)  (4-100)  (5-100)  (7-100)  
+
+Promovido o vertice 4 com novo custo 8 --- Fila -> (6-5)  (4-8)  (2-9)  (8-100)  (5-100)  (7-100)  
+
+Retirado o vertice 6 com custo 5 --- Fila -> (4-8)  (7-100)  (2-9)  (8-100)  (5-100)  
+
+Promovido o vertice 4 com novo custo 6 --- Fila -> (4-6)  (7-100)  (2-9)  (8-100)  (5-100)  
+
+Promovido o vertice 8 com novo custo 7 --- Fila -> (4-6)  (8-7)  (2-9)  (7-100)  (5-100)  
+
+Retirado o vertice 4 com custo 6 --- Fila -> (8-7)  (5-100)  (2-9)  (7-100)  
+
+Promovido o vertice 2 com novo custo 8 --- Fila -> (8-7)  (5-100)  (2-8)  (7-100)  
+
+Retirado o vertice 8 com custo 7 --- Fila -> (2-8)  (5-100)  (7-100)  
+
+Promovido o vertice 5 com novo custo 10 --- Fila -> (2-8)  (5-10)  (7-100)  
+
+Retirado o vertice 2 com custo 8 --- Fila -> (5-10)  (7-100)  
+
+Retirado o vertice 5 com custo 10 --- Fila -> (7-100)  
+
+Retirado o vertice 7 com custo 100 --- Fila -> 
+
+Destruir a fila com prioridade e terminar o programa
+

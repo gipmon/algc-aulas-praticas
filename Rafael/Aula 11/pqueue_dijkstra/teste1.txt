@@ -1,0 +1,28 @@
+Inserir elementos
+
+Inserido o vertice 3 com custo 5 --- Fila -> (3-5)  
+
+Inserido o vertice 2 com custo 4 --- Fila -> (2-4)  (3-5)  
+
+Inserido o vertice 1 com custo 5 --- Fila -> (2-4)  (3-5)  (1-5)  
+
+Inserido o vertice 4 com custo 3 --- Fila -> (4-3)  (2-4)  (1-5)  (3-5)  
+
+Inserido o vertice 5 com custo 2 --- Fila -> (5-2)  (4-3)  (1-5)  (3-5)  (2-4)  
+
+Inserido o vertice 6 com custo 0 --- Fila -> (6-0)  (4-3)  (5-2)  (3-5)  (2-4)  (1-5)  
+
+Retirar elementos
+
+Retirado o vertice 6 com custo 0 --- Fila -> (5-2)  (4-3)  (1-5)  (3-5)  (2-4)  
+
+Retirado o vertice 5 com custo 2 --- Fila -> (4-3)  (2-4)  (1-5)  (3-5)  
+
+Promover elementos
+
+Promovido o vertice 3 com novo custo 1 --- Fila -> (3-1)  (4-3)  (1-5)  (2-4)  
+
+Promovido o vertice 2 com novo custo 2 --- Fila -> (3-1)  (2-2)  (1-5)  (4-3)  
+
+Destruir a fila com prioridade e terminar o programa
+
