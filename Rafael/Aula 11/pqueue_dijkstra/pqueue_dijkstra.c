@@ -29,7 +29,7 @@ PtPQueue PQueueCreate (unsigned int pdim){
     return NULL;
   }
 
-  if ((PQueue->Heap = (VERTEX *) calloc (pdim, sizeof (struct dijkstra))) == NULL){
+  if ((PQueue->Heap = (VERTEX *) calloc (pdim, sizeof (VERTEX))) == NULL){
     free (PQueue);
     return NULL;
   }
@@ -90,8 +90,7 @@ int PQueueDeleteMin (PtPQueue ppqueue, VERTEX *pelem){
   if (ppqueue->NumElem == 0) return PQUEUE_EMPTY;
   if (pelem == NULL) return NULL_PTR;
 
-  pelem->Vertex = ppqueue->Heap[0].Vertex;
-  pelem->Cost = ppqueue->Heap[0].Cost;
+  *pelem = pqueue->Heap[0];
   ppqueue->NumElem--;
 
   for (i = 0; i*2+1 <= ppqueue->NumElem; i = son){
