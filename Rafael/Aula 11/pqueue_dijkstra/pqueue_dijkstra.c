@@ -90,7 +90,11 @@ int PQueueDeleteMin (PtPQueue ppqueue, VERTEX *pelem){
   if (ppqueue->NumElem == 0) return PQUEUE_EMPTY;
   if (pelem == NULL) return NULL_PTR;
 
+<<<<<<< 27e4516a5a564c441fa322e3e63c391d0f16185f
   *pelem = pqueue->Heap[0];
+=======
+  pelem = ppqueue->Heap[0];
+>>>>>>> 3eed5f0c42a3a022ad115df8c1ee4febf19b13e2
   ppqueue->NumElem--;
 
   for (i = 0; i*2+1 <= ppqueue->NumElem; i = son){
